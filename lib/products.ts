@@ -13,29 +13,17 @@ import {
 } from 'drizzle-orm/pg-core';
 import { count, eq, ilike } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
+import { products } from 'app/db/schema/products';
+import { db } from 'app/db';
 
-export const db = drizzle(neon(process.env.POSTGRES_URL!));
-
-export const statusEnum = pgEnum('status', ['active', 'inactive', 'archived']);
-
-export const products = pgTable('products', {
-  id: serial('id').primaryKey(),
-  imageUrl: text('image_url').notNull(),
-  name: text('name').notNull(),
-  status: statusEnum('status').notNull(),
-  price: numeric('price', { precision: 10, scale: 2 }).notNull(),
-  stock: integer('stock').notNull(),
-  availableAt: timestamp('available_at').notNull()
-});
-
-export type SelectProduct = typeof products.$inferSelect;
+export type TProduct = typeof products.$inferSelect;
 export const insertProductSchema = createInsertSchema(products);
 
 export async function getProducts(
   search: string,
   offset: number
 ): Promise<{
-  products: SelectProduct[];
+  products: TProduct[];
   newOffset: number | null;
   totalProducts: number;
 }> {
