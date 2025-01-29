@@ -17,6 +17,11 @@ type SimpleUser = {
   lastSignInAt: number | undefined;
 };
 
+export const metadata = {
+  title: 'Members',
+  description: 'Browse members.'
+};
+
 export default async function UsersPage() {
   async function getUserList(): Promise<{
     data: SimpleUser[];
@@ -25,7 +30,6 @@ export default async function UsersPage() {
     'use server';
     const client = await clerkClient();
     const { data, totalCount } = await client.users.getUserList({ limit: 10 });
-    // Extracting the users array from the PaginatedResourceResponse
 
     // only return public data
     return {

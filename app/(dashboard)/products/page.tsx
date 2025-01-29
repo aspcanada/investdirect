@@ -10,6 +10,11 @@ import {
   CardTitle
 } from '@/components/ui/card';
 
+export const metadata = {
+  title: 'Products',
+  description: 'Browse and manage products.'
+};
+
 export default async function ProductsPage(props: {
   searchParams: Promise<{ q: string; offset: string }>;
 }) {
