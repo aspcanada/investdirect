@@ -1,4 +1,4 @@
-// import 'server-only';
+import 'server-only';
 
 import { loadEnvConfig } from '@next/env'
 import { neon } from '@neondatabase/serverless'

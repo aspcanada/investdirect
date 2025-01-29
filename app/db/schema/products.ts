@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { integer, numeric, pgEnum, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
+import { createInsertSchema } from 'drizzle-zod';
 
 export const statusEnum = pgEnum('status', ['active', 'inactive', 'archived']);
 
@@ -13,3 +14,6 @@ export const products = pgTable('products', {
   stock: integer('stock').notNull(),
   availableAt: timestamp('available_at').notNull()
 });
+
+export type TProduct = typeof products.$inferSelect;
+export const insertProductSchema = createInsertSchema(products);

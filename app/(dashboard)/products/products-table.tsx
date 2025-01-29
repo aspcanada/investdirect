@@ -7,16 +7,8 @@ import {
   TableBody,
   Table
 } from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import { Product } from './product';
-import { SelectProduct } from '@/lib/db';
+import { ProductRow } from './product-row';
+import { TProduct } from 'app/db/schema/products';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,7 +18,7 @@ export function ProductsTable({
   offset,
   totalProducts
 }: {
-  products: SelectProduct[];
+  products: TProduct[];
   offset: number;
   totalProducts: number;
 }) {
@@ -61,7 +53,7 @@ export function ProductsTable({
         </TableHeader>
         <TableBody>
           {products.map((product) => (
-            <Product key={product.id} product={product} />
+            <ProductRow key={product.id} product={product} />
           ))}
         </TableBody>
       </Table>
