@@ -13,6 +13,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { SelectProduct } from '@/lib/db';
 import { deleteProduct } from './actions';
 
+// This is a product row in the products table
 export function Product({ product }: { product: SelectProduct }) {
   return (
     <TableRow>
@@ -34,7 +35,7 @@ export function Product({ product }: { product: SelectProduct }) {
       <TableCell className="hidden md:table-cell">{`$${product.price}`}</TableCell>
       <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
       <TableCell className="hidden md:table-cell">
-        {product.availableAt.toLocaleDateString("en-US")}
+        {product.availableAt.toLocaleDateString('en-US')}
       </TableCell>
       <TableCell>
         <DropdownMenu>
