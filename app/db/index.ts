@@ -5,6 +5,8 @@ import { neon } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-http'
 import { UserMessages } from './schema/users'
 import { products } from './schema/products'
+import { deals } from './schema/deals'
+
 loadEnvConfig(process.cwd())
 
 if (!process.env.DATABASE_URL) {
@@ -13,5 +15,5 @@ if (!process.env.DATABASE_URL) {
 
 const sql = neon(process.env.DATABASE_URL)
 export const db = drizzle(sql, {
-  schema: { UserMessages, products },
+  schema: { UserMessages, products, deals },
 })

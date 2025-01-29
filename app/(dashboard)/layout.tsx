@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import {
+  FolderClosed,
   Home,
   LineChart,
   Package,
@@ -83,6 +84,10 @@ function DesktopNav() {
           <Package className="h-5 w-5" />
         </NavItem>
 
+        <NavItem href="/deals" label="Deals">
+          <FolderClosed className="h-5 w-5" />
+        </NavItem>
+
         <NavItem href="/members" label="Members">
           <Users2 className="h-5 w-5" />
         </NavItem>
@@ -125,22 +130,29 @@ function MobileNav() {
             <span className="sr-only">Vercel</span>
           </Link>
           <Link
-            href="#"
-            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            href="/"
+            className="flex items-center gap-4 px-2.5 text-foreground"
           >
             <Home className="h-5 w-5" />
             Dashboard
           </Link>
           <Link
-            href="#"
+            href="/products"
             className="flex items-center gap-4 px-2.5 text-foreground"
           >
             <Package className="h-5 w-5" />
             Products
           </Link>
           <Link
-            href="#"
-            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            href="/deals"
+            className="flex items-center gap-4 px-2.5 text-foreground"
+          >
+            <FolderClosed className="h-5 w-5" />
+            Deals
+          </Link>
+          <Link
+            href="/members"
+            className="flex items-center gap-4 px-2.5 text-foreground"
           >
             <Users2 className="h-5 w-5" />
             Members
