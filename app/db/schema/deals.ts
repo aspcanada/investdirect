@@ -1,9 +1,9 @@
 // import 'server-only';
 
 import { jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { createInsertSchema } from 'drizzle-zod';
+// import { createInsertSchema } from 'drizzle-zod';
 
-export const deals = pgTable('deals', {
+export const dealsTable = pgTable('deals', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: text('user_id').notNull(),
   dealName: text('deal_name').notNull(),
@@ -35,5 +35,5 @@ export const deals = pgTable('deals', {
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
-export type TDeal = typeof deals.$inferSelect;
-export const insertDealSchema = createInsertSchema(deals);
+export type SelectDeal = typeof dealsTable.$inferSelect;
+export type InsertDeal = typeof dealsTable.$inferInsert;

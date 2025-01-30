@@ -8,7 +8,7 @@ import {
   Table
 } from '@/components/ui/table';
 import { DealRow } from './deal-row';
-import { TDeal } from 'app/db/schema/deals';
+import { SelectDeal } from 'app/db/schema/deals';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,7 @@ export function DealsTable({
   offset,
   totalDeals
 }: {
-  deals: TDeal[];
+  deals: SelectDeal[];
   offset: number;
   totalDeals: number;
 }) {

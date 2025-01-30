@@ -9,11 +9,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ImageIcon, MoreHorizontal } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { TDeal } from 'app/db/schema/deals';
-import { deleteDeal } from './actions';
+import { SelectDeal } from 'app/db/schema/deals';
 import { DeleteForm } from './delete-form';
 
-export function DealRow({ deal }: { deal: TDeal }) {
+export function DealRow({ deal }: { deal: SelectDeal }) {
   // check to see if there is an image
   const hasImage = deal.images.length > 0;
 

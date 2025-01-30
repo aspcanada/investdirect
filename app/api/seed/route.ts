@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "app/db";
-import { deals } from "app/db/schema/deals";
+import { dealsTable } from "app/db/schema/deals";
 import { products } from "app/db/schema/products";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -38,7 +38,7 @@ export async function GET() {
 }
 
 const seedDeals = async () => {
-  await db.insert(deals).values([
+  await db.insert(dealsTable).values([
     {
       id: uuidv4(),
       userId: userId,
