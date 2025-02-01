@@ -23,6 +23,7 @@ export async function deleteDeal(
 
   // only allowed to delete your own deals
   if (user?.userId !== userId) {
+    console.log("User is not allowed to delete this deal");
     return { message: 'You are not allowed to delete this deal' };
   }
 
@@ -32,10 +33,10 @@ export async function deleteDeal(
 
   try {
     await db.delete(dealsTable).where(eq(dealsTable.id, dealId as string));
-
-    revalidatePath('/');
+    revalidatePath('/deals');
     return { message: `Deleted deal ${dealId}` };
   } catch (e) {
+    console.error("Database Delete Error:", e);
     return { message: 'Failed to delete deal' };
   }
 }
