@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { AddDealForm } from '../add-form';
+import { AddDealForm } from './add-form';
 
 export const metadata = {
   title: 'Add Deal',
