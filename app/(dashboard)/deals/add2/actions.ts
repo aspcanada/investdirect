@@ -71,14 +71,14 @@ export async function createDeal(prevState: ActionResponse | null, formData: For
 
     await db.insert(dealsTable).values(rawData);
     console.log("Deal created successfully!");
-    // revalidatePath('/deals');
-    redirect('/deals');
-    return { success: true,message: `Deal ${rawData.dealName} created successfully!` };
+    // return { success: true,message: `Deal ${rawData.dealName} created successfully!` };
 
   } catch (error) {
     console.error("Database Insert Error:", error);
     return { success: false, message: "Failed to create deal." };
   }
-}
 
+  revalidatePath('/deals');
+  redirect('/deals');
+}
 
