@@ -12,6 +12,12 @@ export default {
         hostname: "*.public.blob.vercel-storage.com",
         port: "",
         pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "**",
       }
     ]
   }

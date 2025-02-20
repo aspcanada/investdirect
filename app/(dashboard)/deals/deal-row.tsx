@@ -34,12 +34,11 @@ export function DealRow({ deal }: { deal: SelectDeal }) {
   );
 
   return (
-    <TableRow
-      onClick={() => router.push(`/deals/${deal.id}`)}
-      className="cursor-pointer"
-    >
+    <TableRow>
       <TableCell className="hidden sm:table-cell">{imageElement}</TableCell>
-      <TableCell className="font-medium">{deal.dealName}</TableCell>
+      <TableCell>
+        <Link href={`/deals/${deal.id}`}>{deal.dealName}</Link>
+      </TableCell>
       <TableCell>{`$${deal.financials.amountNeeded}`}</TableCell>
       <TableCell>{`${deal.financials.interestRate}%`}</TableCell>
       <TableCell>{`${deal.financials.loanTerm} months`}</TableCell>
@@ -50,7 +49,7 @@ export function DealRow({ deal }: { deal: SelectDeal }) {
         {deal.createdAt.toLocaleDateString('en-US')}
       </TableCell> */}
       <TableCell>
-        {/* <DropdownMenu>
+        <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button aria-haspopup="true" size="icon" variant="ghost">
               <MoreHorizontal className="h-4 w-4" />
@@ -66,7 +65,7 @@ export function DealRow({ deal }: { deal: SelectDeal }) {
               <DeleteForm dealId={deal.id} userId={deal.userId} />
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu> */}
+        </DropdownMenu>
       </TableCell>
     </TableRow>
   );

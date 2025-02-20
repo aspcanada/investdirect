@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "app/db";
 import { dealsTable } from "app/db/schema/deals";
 import { products } from "app/db/schema/products";
+import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from 'uuid';
 
 // export const dynamic = 'force-dynamic';
@@ -28,6 +29,7 @@ export async function GET() {
   }
 
   // await seedProducts();
+  await purgeDeals();
   await seedDeals();
 
   return Response.json({
@@ -35,6 +37,10 @@ export async function GET() {
   });
 
   
+}
+
+const purgeDeals = async () => {
+  await db.delete(dealsTable).where(eq(dealsTable.userId, userId));
 }
 
 const seedDeals = async () => {
@@ -66,7 +72,9 @@ const seedDeals = async () => {
         lotSizeSf: 4000
       },
       images: [],
-      documents: []
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       id: uuidv4(),
@@ -94,8 +102,14 @@ const seedDeals = async () => {
         buildingSf: 3000,
         lotSizeSf: 3000
       },
-      images: [],
-      documents: []
+      images: [
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab',
+        'https://images.unsplash.com/photo-1497366811353-6870744d04b2',
+        'https://images.unsplash.com/photo-1497366216548-37526070297c'
+      ],
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       id: uuidv4(),
@@ -123,8 +137,14 @@ const seedDeals = async () => {
         buildingSf: 3200,
         lotSizeSf: 6000
       },
-      images: [],
-      documents: []
+      images: [
+        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750',
+        'https://images.unsplash.com/photo-1554995207-c18c203602cb',
+        'https://images.unsplash.com/photo-1570129477492-45c003edd2be'
+      ],
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       id: uuidv4(),
@@ -152,8 +172,14 @@ const seedDeals = async () => {
         buildingSf: 1200,
         lotSizeSf: 4000
       },
-      images: [],
-      documents: []
+      images: [
+        'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8',
+        'https://images.unsplash.com/photo-1464146072230-91cabc968266',
+        'https://images.unsplash.com/photo-1542718610-a1d656d1884c'
+      ],
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       id: uuidv4(),
@@ -182,7 +208,9 @@ const seedDeals = async () => {
         lotSizeSf: 25000
       },
       images: [],
-      documents: []
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       id: uuidv4(),
@@ -210,8 +238,14 @@ const seedDeals = async () => {
         buildingSf: 50000,
         lotSizeSf: 10000
       },
-      images: [],
-      documents: []
+      images: [
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab',
+        'https://images.unsplash.com/photo-1497366811353-6870744d04b2',
+        'https://images.unsplash.com/photo-1497366216548-37526070297c'
+      ],
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       id: uuidv4(),
@@ -239,8 +273,14 @@ const seedDeals = async () => {
         buildingSf: 3500,
         lotSizeSf: 8000
       },
-      images: [],
-      documents: []
+      images: [
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab',
+        'https://images.unsplash.com/photo-1497366811353-6870744d04b2',
+        'https://images.unsplash.com/photo-1497366216548-37526070297c'
+      ],
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       id: uuidv4(),
@@ -268,8 +308,14 @@ const seedDeals = async () => {
         buildingSf: 12000,
         lotSizeSf: 30000
       },
-      images: [],
-      documents: []
+      images: [
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab',
+        'https://images.unsplash.com/photo-1497366811353-6870744d04b2',
+        'https://images.unsplash.com/photo-1497366216548-37526070297c'
+      ],
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       id: uuidv4(),
@@ -297,8 +343,14 @@ const seedDeals = async () => {
         buildingSf: 25000,
         lotSizeSf: 100000
       },
-      images: [],
-      documents: []
+      images: [
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab',
+        'https://images.unsplash.com/photo-1497366811353-6870744d04b2',
+        'https://images.unsplash.com/photo-1497366216548-37526070297c'
+      ],
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       id: uuidv4(),
@@ -326,8 +378,49 @@ const seedDeals = async () => {
         buildingSf: 8000,
         lotSizeSf: 12000
       },
-      images: [],
-      documents: []
+      images: [
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab',
+        'https://images.unsplash.com/photo-1497366811353-6870744d04b2',
+        'https://images.unsplash.com/photo-1497366216548-37526070297c'
+      ],
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: uuidv4(),
+      userId: userId,
+      dealName: 'Downtown Commercial Space',
+      description: 'Prime commercial location in the heart of downtown',
+      financials: {
+        value: 2500000,
+        repairCosts: 150000,
+        amountNeeded: 1800000,
+        interestRate: 0.072,
+        loanTerm: 36
+      },
+      propertyDetails: {
+        propertyType: 'Commercial',
+        address: {
+          street: '456 Business Ave',
+          city: 'Vancouver',
+          province: 'BC',
+          postalCode: 'V6C 1X6'
+        },
+        bedrooms: 0,
+        bathrooms: 4,
+        year: 1998,
+        buildingSf: 5000,
+        lotSizeSf: 5000
+      },
+      images: [
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab',
+        'https://images.unsplash.com/photo-1497366811353-6870744d04b2',
+        'https://images.unsplash.com/photo-1497366216548-37526070297c'
+      ],
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
     }
   ]);
 };

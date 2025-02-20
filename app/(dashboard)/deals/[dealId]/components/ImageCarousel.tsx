@@ -1,6 +1,13 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { ImageIcon } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious
+} from '@/components/ui/carousel';
 
 interface ImageCarouselProps {
   images: string[];
@@ -21,17 +28,23 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
   }
 
   return (
-    <Card>
-      <CardContent className="p-0">
-        <div className="relative h-[400px] w-full">
-          <Image
-            src={images[0]}
-            alt="Property image"
-            fill
-            className="object-cover rounded-lg"
-          />
-        </div>
-      </CardContent>
-    </Card>
+    <Carousel>
+      <CarouselContent>
+        {images.map((image) => (
+          <CarouselItem key={image}>
+            <div className="relative h-[400px]">
+              <Image
+                src={image}
+                alt="Property image"
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
+      <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
+    </Carousel>
   );
 }
