@@ -1,386 +1,516 @@
 'use client';
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { createDeal } from '../actions';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '@/components/ui/form';
+import { useActionState } from 'react';
+import { ActionResponse, createDeal } from './actions';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { CheckCircle2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const dealSchema = z.object({
-  dealName: z.string().min(3, 'Deal name must be at least 3 characters.'),
-  description: z
-    .string()
-    .min(10, 'Description must be at least 10 characters.'),
-  value: z.coerce.number().min(1, 'Value must be greater than 0.'),
-  repairCosts: z.coerce.number().min(0, 'Repair costs cannot be negative.'),
-  amountNeeded: z.coerce
-    .number()
-    .min(1, 'Amount needed must be greater than 0.'),
-  interestRate: z.coerce.number().min(0, 'Interest rate cannot be negative.'),
-  loanTerm: z.coerce.number().min(1, 'Loan term must be greater than 0.'),
-  propertyType: z.string().min(3, 'Property type is required.'),
-  address: z.object({
-    street: z.string(),
-    city: z.string(),
-    province: z.string(),
-    postalCode: z.string()
-  }),
-  bedrooms: z.coerce.number().min(0),
-  bathrooms: z.coerce.number().min(0),
-  year: z.coerce.number().min(1800, 'Invalid year.'),
-  buildingSf: z.coerce.number().min(1),
-  lotSizeSf: z.coerce.number().min(1)
-});
+const initialState: ActionResponse = {
+  success: false,
+  message: ''
+};
 
 export function AddDealForm() {
-  const [message, setMessage] = useState('');
-
-  const form = useForm({
-    resolver: async (data, context, options) => {
-      const result = await zodResolver(dealSchema)(data, context, options);
-      if (result.errors) {
-        console.log('Form validation errors:', result.errors);
-      }
-      return result;
-    },
-
-    defaultValues: {
-      dealName: '123',
-      description: '1234567890',
-      value: 123,
-      repairCosts: 123,
-      amountNeeded: 123,
-      interestRate: 123,
-      loanTerm: 123,
-      propertyType: '123',
-      address: {
-        street: '123',
-        city: '123',
-        province: '123',
-        postalCode: '123'
-      },
-      bedrooms: 123,
-      bathrooms: 123,
-      year: 2023,
-      buildingSf: 123,
-      lotSizeSf: 123
-    }
-
-    // defaultValues: {
-    //   dealName: '',
-    //   description: '',
-    //   value: 0,
-    //   repairCosts: 0,
-    //   amountNeeded: 0,
-    //   interestRate: 0,
-    //   loanTerm: 0,
-    //   propertyType: '',
-    //   address: {
-    //     street: '',
-    //     city: '',
-    //     province: '',
-    //     postalCode: ''
-    //   },
-    //   bedrooms: 0,
-    //   bathrooms: 0,
-    //   year: 2023,
-    //   buildingSf: 0,
-    //   lotSizeSf: 0
-    // }
-  });
-
-  const onSubmit = async (data: any) => {
-    const result = await createDeal(data);
-    // setMessage(result.message);
-    redirect('/deals');
-    // revalidatePath('/deals');
-  };
+  const [state, action, isPending] = useActionState(createDeal, initialState);
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow rounded-md">
-      <h1 className="text-2xl font-semibold mb-4">Add a New Deal</h1>
-      {message && <p className="text-green-600">{message}</p>}
+    <>
+      <div className="max-w-2xl mx-auto mt-10 p-6">
+        {/* <h1 className="text-2xl font-semibold mb-4">Add a New Deal</h1> */}
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {/* Deal Name */}
-          <FormField
-            control={form.control}
-            name="dealName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Deal Name</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Description */}
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Financials */}
-          <div className="grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="value"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Value</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+        <form action={action} autoComplete="on">
+          <div className="space-y-4">
+            {/* Deal Name */}
+            <div className="space-y-2">
+              <Label htmlFor="dealName">Deal Name</Label>
+              <Input
+                id="dealName"
+                name="dealName"
+                defaultValue={state?.inputs?.dealName}
+                placeholder="Deal Name"
+                required
+                minLength={5}
+                maxLength={100}
+                autoComplete="dealName"
+                aria-describedby="dealName-error"
+                className={state?.errors?.dealName ? 'border-red-500' : ''}
+              />
+              {state?.errors?.dealName && (
+                <p id="dealName-error" className="text-sm text-red-500">
+                  {state.errors.dealName[0]}
+                </p>
               )}
-            />
+            </div>
 
-            <FormField
-              control={form.control}
-              name="repairCosts"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Repair Costs</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            {/* Description */}
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                name="description"
+                defaultValue={state?.inputs?.description}
+                placeholder="Description"
+                required
+                minLength={5}
+                autoComplete="description"
+                aria-describedby="description-error"
+                className={state?.errors?.description ? 'border-red-500' : ''}
+              />
+              {state?.errors?.description && (
+                <p id="description-error" className="text-sm text-red-500">
+                  {state.errors.description[0]}
+                </p>
               )}
-            />
+            </div>
 
-            {/* Amount Needed */}
-            <FormField
-              control={form.control}
-              name="amountNeeded"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount Needed</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Financials */}
+            <Card className="my-5 w-full mx-auto">
+              <CardHeader>
+                <CardTitle>Financials</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      {/* value */}
+                      <Label htmlFor="value">Value</Label>
+                      <Input
+                        id="value"
+                        name="value"
+                        defaultValue={state?.inputs?.financials?.value}
+                        type="number"
+                        placeholder="500000"
+                        required
+                        minLength={1}
+                        maxLength={100}
+                        autoComplete="value"
+                        aria-describedby="value-error"
+                        className={
+                          state?.errors?.['financials.value']
+                            ? 'border-red-500'
+                            : ''
+                        }
+                      />
+                      {state?.errors?.['financials.value'] && (
+                        <p id="value-error" className="text-sm text-red-500">
+                          {state.errors['financials.value'][0]}
+                        </p>
+                      )}
+                    </div>
 
-            {/* Interest Rate */}
-            <FormField
-              control={form.control}
-              name="interestRate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Interest Rate</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    {/* repairCosts */}
+                    <div className="space-y-2">
+                      <Label htmlFor="repairCosts">Repair Costs</Label>
+                      <Input
+                        id="repairCosts"
+                        name="repairCosts"
+                        defaultValue={state?.inputs?.financials?.repairCosts}
+                        type="number"
+                        placeholder="50000"
+                        // required
+                        minLength={1}
+                        maxLength={100}
+                        autoComplete="repairCosts"
+                        aria-describedby="repairCosts-error"
+                        className={
+                          state?.errors?.['financials.repairCosts']
+                            ? 'border-red-500'
+                            : ''
+                        }
+                      />
+                      {state?.errors?.['financials.repairCosts'] && (
+                        <p
+                          id="repairCosts-error"
+                          className="text-sm text-red-500"
+                        >
+                          {state.errors['financials.repairCosts'][0]}
+                        </p>
+                      )}
+                    </div>
+                  </div>
 
-            {/* Loan Term */}
-            <FormField
-              control={form.control}
-              name="loanTerm"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Loan Term</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  <div className="grid grid-cols-3 gap-4">
+                    {/* Amount Needed */}
+                    <div className="space-y-2">
+                      <Label htmlFor="amountNeeded">Amount Needed</Label>
+                      <Input
+                        id="amountNeeded"
+                        name="amountNeeded"
+                        defaultValue={state?.inputs?.financials?.amountNeeded}
+                        type="number"
+                        placeholder="100000"
+                        required
+                        minLength={1}
+                        maxLength={100}
+                        autoComplete="amountNeeded"
+                        aria-describedby="amountNeeded-error"
+                        className={
+                          state?.errors?.['financials.amountNeeded']
+                            ? 'border-red-500'
+                            : ''
+                        }
+                      />
+                      {state?.errors?.['financials.amountNeeded'] && (
+                        <p
+                          id="amountNeeded-error"
+                          className="text-sm text-red-500"
+                        >
+                          {state.errors['financials.amountNeeded'][0]}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Interest Rate */}
+                    <div className="space-y-2">
+                      <Label htmlFor="interestRate">Interest Rate</Label>
+                      <Input
+                        id="interestRate"
+                        name="interestRate"
+                        defaultValue={state?.inputs?.financials?.interestRate}
+                        type="number"
+                        placeholder="10%"
+                        required
+                        minLength={1}
+                        maxLength={100}
+                        autoComplete="interestRate"
+                        aria-describedby="interestRate-error"
+                        className={
+                          state?.errors?.['financials.interestRate']
+                            ? 'border-red-500'
+                            : ''
+                        }
+                      />
+                      {state?.errors?.['financials.interestRate'] && (
+                        <p
+                          id="interestRate-error"
+                          className="text-sm text-red-500"
+                        >
+                          {state.errors['financials.interestRate'][0]}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Loan Term */}
+                    <div className="space-y-2">
+                      <Label htmlFor="loanTerm">Loan Term (Months)</Label>
+                      <Input
+                        id="loanTerm"
+                        name="loanTerm"
+                        defaultValue={state?.inputs?.financials?.loanTerm}
+                        type="number"
+                        placeholder="12"
+                        required
+                        minLength={5}
+                        maxLength={100}
+                        autoComplete="loanTerm"
+                        aria-describedby="loanTerm-error"
+                        className={
+                          state?.errors?.['financials.loanTerm']
+                            ? 'border-red-500'
+                            : ''
+                        }
+                      />
+                      {state?.errors?.['financials.loanTerm'] && (
+                        <p id="loanTerm-error" className="text-sm text-red-500">
+                          {state.errors['financials.loanTerm'][0]}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Property Details */}
-          <div className="grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="propertyType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Property Type</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <Card className="my-5 w-full mx-auto">
+            <CardHeader>
+              <CardTitle>Property Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    {/* propertyType */}
+                    <Label htmlFor="propertyType">Property Type</Label>
+                    <Input
+                      id="propertyType"
+                      name="propertyType"
+                      defaultValue={
+                        state?.inputs?.propertyDetails?.propertyType
+                      }
+                      placeholder="Single Family Dwelling"
+                      // required
+                      // minLength={5}
+                      // maxLength={100}
+                      autoComplete="propertyType"
+                      aria-describedby="propertyType-error"
+                      className={
+                        state?.errors?.['propertyDetails.propertyType']
+                          ? 'border-red-500'
+                          : ''
+                      }
+                    />
+                  </div>
 
-            {/* bedrooms */}
-            <FormField
-              control={form.control}
-              name="bedrooms"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bedrooms</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  {/* year */}
+                  <div className="space-y-2">
+                    <Label htmlFor="year">Year</Label>
+                    <Input
+                      id="year"
+                      name="year"
+                      defaultValue={state?.inputs?.propertyDetails?.year}
+                      type="number"
+                      placeholder="2008"
+                      required
+                      minLength={4}
+                      maxLength={4}
+                      autoComplete="year"
+                      className={
+                        state?.errors?.['propertyDetails.year']
+                          ? 'border-red-500'
+                          : ''
+                      }
+                    />
+                    {state?.errors?.['propertyDetails.year'] && (
+                      <p id="year-error" className="text-sm text-red-500">
+                        {state.errors['propertyDetails.year'][0]}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-            {/* bathrooms */}
-            <FormField
-              control={form.control}
-              name="bathrooms"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bathrooms</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <div className="grid grid-cols-2 gap-4">
+                  {/* bedrooms */}
+                  <div className="space-y-2">
+                    <Label htmlFor="bedrooms">Bedrooms</Label>
+                    <Input
+                      id="bedrooms"
+                      name="bedrooms"
+                      defaultValue={state?.inputs?.propertyDetails?.bedrooms}
+                      type="number"
+                      placeholder="3"
+                      // required
+                      // minLength={5}
+                      // maxLength={100}
+                      autoComplete="bedrooms"
+                    />
+                  </div>
 
-            {/* year */}
-            <FormField
-              control={form.control}
-              name="year"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Year</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  {/* bathrooms */}
+                  <div className="space-y-2">
+                    <Label htmlFor="bathrooms">Bathrooms</Label>
+                    <Input
+                      id="bathrooms"
+                      name="bathrooms"
+                      defaultValue={state?.inputs?.propertyDetails?.bathrooms}
+                      type="number"
+                      placeholder="2"
+                      // required
+                      // minLength={5}
+                      // maxLength={100}
+                      autoComplete="bathrooms"
+                    />
+                  </div>
+                </div>
 
-            {/* buildingSf */}
-            <FormField
-              control={form.control}
-              name="buildingSf"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Building Size</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <div className="grid grid-cols-2 gap-4">
+                  {/* buildingSf */}
+                  <div className="space-y-2">
+                    <Label htmlFor="buildingSf">Building Size (sqft)</Label>
+                    <Input
+                      id="buildingSf"
+                      name="buildingSf"
+                      defaultValue={state?.inputs?.propertyDetails?.buildingSf}
+                      type="number"
+                      placeholder="2000"
+                      // required
+                      // minLength={5}
+                      // maxLength={100}
+                      autoComplete="buildingSf"
+                      className={
+                        state?.errors?.['propertyDetails.buildingSf']
+                          ? 'border-red-500'
+                          : ''
+                      }
+                    />
+                    {state?.errors?.['propertyDetails.buildingSf'] && (
+                      <p id="buildingSf-error" className="text-sm text-red-500">
+                        {state.errors['propertyDetails.buildingSf'][0]}
+                      </p>
+                    )}
+                  </div>
 
-            {/* lotSizeSf */}
-            <FormField
-              control={form.control}
-              name="lotSizeSf"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Lot Size</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                  {/* lotSizeSf */}
+                  <div className="space-y-2">
+                    <Label htmlFor="lotSizeSf">Lot Size (sqft)</Label>
+                    <Input
+                      id="lotSizeSf"
+                      name="lotSizeSf"
+                      defaultValue={state?.inputs?.propertyDetails?.lotSizeSf}
+                      type="number"
+                      placeholder="10000"
+                      // required
+                      // minLength={1}
+                      // maxLength={100}
+                      autoComplete="lotSizeSf"
+                      className={
+                        state?.errors?.['propertyDetails.lotSizeSf']
+                          ? 'border-red-500'
+                          : ''
+                      }
+                    />
+                    {state?.errors?.['propertyDetails.lotSizeSf'] && (
+                      <p id="lotSizeSf-error" className="text-sm text-red-500">
+                        {state.errors['propertyDetails.lotSizeSf'][0]}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Address */}
-          <div className="grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="address.street"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Street</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <Card className="my-5 w-full mx-auto">
+            <CardHeader>
+              <CardTitle>Address</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="street">Street</Label>
+                  <Input
+                    id="street"
+                    name="street"
+                    defaultValue={
+                      state?.inputs?.propertyDetails?.address?.street
+                    }
+                    placeholder="123 Main St"
+                    // required
+                    minLength={5}
+                    maxLength={100}
+                    autoComplete="street"
+                    aria-describedby="street-error"
+                    className={
+                      state?.errors?.['propertyDetails.address.street']
+                        ? 'border-red-500'
+                        : ''
+                    }
+                  />
+                  {state?.errors?.['propertyDetails.address.street'] && (
+                    <p id="street-error" className="text-sm text-red-500">
+                      {state.errors['propertyDetails.address.street'][0]}
+                    </p>
+                  )}
+                </div>
 
-            {/* city should be nested in address */}
-            <FormField
-              control={form.control}
-              name="address.city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>City</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      name="city"
+                      defaultValue={
+                        state?.inputs?.propertyDetails?.address?.city
+                      }
+                      placeholder="Toronto"
+                      required
+                      minLength={2}
+                      maxLength={50}
+                      autoComplete="city"
+                      aria-describedby="city-error"
+                      className={
+                        state?.errors?.['propertyDetails.address.city']
+                          ? 'border-red-500'
+                          : ''
+                      }
+                    />
+                    {state?.errors?.['propertyDetails.address.city'] && (
+                      <p id="city-error" className="text-sm text-red-500">
+                        {state.errors['propertyDetails.address.city'][0]}
+                      </p>
+                    )}
+                  </div>
 
-            {/* province */}
-            <FormField
-              control={form.control}
-              name="address.province"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Province</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  <div className="space-y-2">
+                    <Label htmlFor="province">Province</Label>
+                    <Input
+                      id="province"
+                      name="province"
+                      defaultValue={
+                        state?.inputs?.propertyDetails?.address?.province
+                      }
+                      placeholder="ON"
+                      required
+                      minLength={2}
+                      maxLength={50}
+                      autoComplete="province"
+                      aria-describedby="province-error"
+                      className={
+                        state?.errors?.['propertyDetails.address.province']
+                          ? 'border-red-500'
+                          : ''
+                      }
+                    />
+                    {state?.errors?.['propertyDetails.address.province'] && (
+                      <p id="province-error" className="text-sm text-red-500">
+                        {state.errors['propertyDetails.address.province'][0]}
+                      </p>
+                    )}
+                  </div>
 
-            {/* postalCode */}
-            <FormField
-              control={form.control}
-              name="address.postalCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Postal Code</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  <div className="space-y-2">
+                    <Label htmlFor="postalCode">Postal Code</Label>
+                    <Input
+                      id="postalCode"
+                      name="postalCode"
+                      defaultValue={
+                        state?.inputs?.propertyDetails?.address?.postalCode
+                      }
+                      placeholder="M5H 2N2"
+                      required
+                      pattern="[A-Za-z][0-9][A-Za-z][ -]?[0-9][A-Za-z][0-9]"
+                      minLength={6}
+                      maxLength={7}
+                      autoComplete="postal-code"
+                      aria-describedby="postalCode-error"
+                      className={
+                        state?.errors?.['propertyDetails.address.postalCode']
+                          ? 'border-red-500'
+                          : ''
+                      }
+                    />
+                    {state?.errors?.['propertyDetails.address.postalCode'] && (
+                      <p id="postalCode-error" className="text-sm text-red-500">
+                        {state.errors['propertyDetails.address.postalCode'][0]}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {state?.message && (
+            <Alert variant={state.success ? 'default' : 'destructive'}>
+              {state.success && <CheckCircle2 className="h-4 w-4" />}
+              <AlertDescription>{state.message}</AlertDescription>
+            </Alert>
+          )}
+
+          <div className="mt-5">
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? 'Saving...' : 'Save Deal'}
+            </Button>
           </div>
-
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? 'Submitting...' : 'Submit'}
-          </Button>
         </form>
-      </Form>
-    </div>
+      </div>
+    </>
   );
 }
