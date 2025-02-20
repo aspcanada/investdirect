@@ -63,7 +63,7 @@ export async function createDeal(prevState: ActionResponse | null, formData: For
   const { userId } = await auth();
   try {
     const rawData: InsertDeal = {
-      userId: userId as string,
+      userId: userId!,
       dealName: formData.get('dealName') as string,
       description: formData.get('description') as string,
       financials: {

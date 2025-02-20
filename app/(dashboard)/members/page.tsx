@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import UserCard from '@/components/UserCard';
+import { UserCard } from '@/components/UserCard';
 import { clerkClient, User } from '@clerk/nextjs/server';
 
 // Update this type definition

@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, UserPlus } from 'lucide-react';
 import moment from 'moment';
 
 interface UserCardProps {
@@ -29,8 +29,8 @@ const UserCard: FC<UserCardProps> = ({
   // onMessageClick
 }) => {
   return (
-    <Card className="w-full max-w-sm p-4 shadow-lg">
-      <CardHeader className="flex items-center space-x-4">
+    <Card>
+      <CardHeader className="flex items-center">
         <Avatar className="h-16 w-16">
           {avatarUrl ? (
             <AvatarImage src={avatarUrl} alt={name} />
@@ -39,24 +39,24 @@ const UserCard: FC<UserCardProps> = ({
           )}
         </Avatar>
         <div>
-          <CardTitle className="text-lg font-semibold">{name}</CardTitle>
+          <CardTitle className="text-lg">{name}</CardTitle>
           <CardDescription>
             Active: {lastSignInAt ? moment(lastSignInAt).fromNow() : 'Never'}
           </CardDescription>
         </div>
       </CardHeader>
-      <CardContent className="flex justify-center pt-4">
-        <Button
-          // onClick={onMessageClick}
-          variant="default"
-          className="flex items-center space-x-2"
-        >
-          <MessageCircle className="h-4 w-4" />
-          <span>Message</span>
+      <CardContent className="flex justify-center gap-2">
+        <Button>
+          <UserPlus />
+          Follow
+        </Button>
+        <Button variant="outline">
+          <MessageCircle />
+          Message
         </Button>
       </CardContent>
     </Card>
   );
 };
 
-export default UserCard;
+export { UserCard };

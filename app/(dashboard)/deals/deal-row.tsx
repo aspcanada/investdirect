@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,8 +12,10 @@ import { ImageIcon, MoreHorizontal } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { SelectDeal } from 'app/db/schema/deals';
 import { DeleteForm } from './delete-form';
+import { useRouter } from 'next/navigation';
 
 export function DealRow({ deal }: { deal: SelectDeal }) {
+  const router = useRouter();
   // check to see if there is an image
   const hasImage = deal.images.length > 0;
 
@@ -31,7 +34,10 @@ export function DealRow({ deal }: { deal: SelectDeal }) {
   );
 
   return (
-    <TableRow>
+    <TableRow
+      onClick={() => router.push(`/deals/${deal.id}`)}
+      className="cursor-pointer"
+    >
       <TableCell className="hidden sm:table-cell">{imageElement}</TableCell>
       <TableCell className="font-medium">{deal.dealName}</TableCell>
       <TableCell>{`$${deal.financials.amountNeeded}`}</TableCell>
@@ -44,7 +50,7 @@ export function DealRow({ deal }: { deal: SelectDeal }) {
         {deal.createdAt.toLocaleDateString('en-US')}
       </TableCell> */}
       <TableCell>
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button aria-haspopup="true" size="icon" variant="ghost">
               <MoreHorizontal className="h-4 w-4" />
@@ -53,12 +59,14 @@ export function DealRow({ deal }: { deal: SelectDeal }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/deals/${deal.id}`}>View</Link>
+            </DropdownMenuItem>
             <DropdownMenuItem>
               <DeleteForm dealId={deal.id} userId={deal.userId} />
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </TableCell>
     </TableRow>
   );
