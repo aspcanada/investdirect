@@ -1,4 +1,5 @@
 import { ClerkProvider } from '@clerk/nextjs';
+import { EdgeStoreProvider } from '../lib/edgestore';
 import './globals.css';
 
 import { Analytics } from '@vercel/analytics/react';
@@ -17,8 +18,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="flex min-h-screen w-full flex-col">{children}</body>
-        <Analytics />
+        <body className="flex min-h-screen w-full flex-col">
+          <EdgeStoreProvider>{children}</EdgeStoreProvider>
+          <Analytics />
+        </body>
       </html>
     </ClerkProvider>
   );
