@@ -13,9 +13,7 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 interface DealPageProps {
-  params: {
-    dealId: string;
-  };
+  params: Promise<{ dealId: string }>;
 }
 
 async function getDeal(dealId: string) {
@@ -48,7 +46,9 @@ async function getUser(userId: string) {
 }
 
 export default async function DealPage({ params }: DealPageProps) {
-  const deal = await getDeal(params.dealId);
+  const { dealId } = await params;
+  const deal = await getDeal(dealId);
+  // const deal = await getDeal(params.dealId);
   const user = await getUser(deal.userId);
 
   return (
