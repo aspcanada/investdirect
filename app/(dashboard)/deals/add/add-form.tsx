@@ -12,9 +12,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { useEdgeStore } from '@/lib/edgestore';
 import {
-  MultiImageDropzone,
+  MultiFileDropzone,
   type FileState
-} from '@/components/upload/multi-image';
+} from '@/components/upload/multi-file';
 
 const initialState: ActionResponse = {
   success: false,
@@ -556,24 +556,55 @@ function MultiImageExample() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col items-center">
       <input
         type="hidden"
         name="images"
         value={JSON.stringify(uploadedImages)}
       />
-      <MultiImageDropzone
+      <MultiFileDropzone
         value={fileStates}
         dropzoneOptions={{
-          maxFiles: 6,
-          maxSize: 1024 * 1024 * 10 // 10 MB
+          maxFiles: 3,
+          maxSize: 1024 * 1024 * 2 // 2 MB
         }}
         onChange={setFileStates}
         onFilesAdded={async (addedFiles) => {
           setFileStates([...fileStates, ...addedFiles]);
+          await Promise.all(
+            addedFiles.map(async (addedFileState) => {
+              try {
+                const res = await edgestore.publicFiles.upload({
+                  file: addedFileState.file as File,
+                  onProgressChange: async (progress) => {
+                    updateFileProgress(addedFileState.key, progress);
+                    if (progress === 100) {
+                      // wait 1 second to set it to complete
+                      // so that the user can see the progress bar
+                      await new Promise((resolve) => setTimeout(resolve, 1000));
+                      updateFileProgress(addedFileState.key, 'COMPLETE');
+                    }
+                  }
+                });
+                setUploadedImages((prev) => [...prev, res.url]);
+                setUploadRes((uploadRes) => [
+                  ...uploadRes,
+                  {
+                    url: res.url,
+                    filename:
+                      typeof addedFileState.file === 'string'
+                        ? addedFileState.file
+                        : addedFileState.file.name
+                  }
+                ]);
+              } catch (err) {
+                updateFileProgress(addedFileState.key, 'ERROR');
+              }
+            })
+          );
         }}
       />
-      <Button
+      {/* <Button
         className="mt-2"
         onClick={async () => {
           await Promise.all(
@@ -620,8 +651,8 @@ function MultiImageExample() {
         }
       >
         Upload
-      </Button>
-      {uploadRes.length > 0 && (
+      </Button> */}
+      {/* {uploadRes.length > 0 && (
         <div className="mt-2">
           {uploadRes.map((res) => (
             <a
@@ -635,7 +666,7 @@ function MultiImageExample() {
             </a>
           ))}
         </div>
-      )}
+      )} */}
     </div>
   );
 }
