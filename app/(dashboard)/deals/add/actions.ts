@@ -35,6 +35,7 @@ const dealInsertSchema = createInsertSchema(dealsTable, {
     buildingSf: z.number().optional(),
     lotSizeSf: z.number().optional(),
   }),
+  images: z.array(z.string().url()).default([]),
 });
 
 /**
@@ -87,7 +88,7 @@ export async function createDeal(prevState: ActionResponse | null, formData: For
         buildingSf: Number(formData.get('buildingSf')),
         lotSizeSf: Number(formData.get('lotSizeSf')),
       },
-      images: [],
+      images: JSON.parse(formData.get("images") as string || "[]"),
       documents: [],
     }
 
