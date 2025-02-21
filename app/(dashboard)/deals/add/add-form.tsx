@@ -11,8 +11,10 @@ import { CheckCircle2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { useEdgeStore } from '@/lib/edgestore';
-import { SingleImageDropzone } from '@/components/upload/single-image';
-import { ExampleFrame } from '@/components/ui/example-frame';
+import {
+  MultiImageDropzone,
+  type FileState
+} from '@/components/upload/multi-image';
 
 const initialState: ActionResponse = {
   success: false,
@@ -507,7 +509,7 @@ export function AddDealForm() {
               <CardTitle>Property Images</CardTitle>
             </CardHeader>
             <CardContent>
-              <SingleImageExample />
+              <MultiImageExample />
             </CardContent>
           </Card>
 
@@ -529,107 +531,111 @@ export function AddDealForm() {
   );
 }
 
-function SingleImageExample() {
-  const [file, setFile] = useState<File>();
-  const [progress, setProgress] = useState<
-    'PENDING' | 'COMPLETE' | 'ERROR' | number
-  >('PENDING');
+function MultiImageExample() {
+  const [fileStates, setFileStates] = useState<FileState[]>([]);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [uploadRes, setUploadRes] = useState<{
-    url: string;
-    filename: string;
-  }>();
+  const [uploadRes, setUploadRes] = useState<
+    {
+      url: string;
+      filename: string;
+    }[]
+  >([]);
   const { edgestore } = useEdgeStore();
 
+  function updateFileProgress(key: string, progress: FileState['progress']) {
+    setFileStates((fileStates) => {
+      const newFileStates = structuredClone(fileStates);
+      const fileState = newFileStates.find(
+        (fileState) => fileState.key === key
+      );
+      if (fileState) {
+        fileState.progress = progress;
+      }
+      return newFileStates;
+    });
+  }
+
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col">
       <input
         type="hidden"
         name="images"
         value={JSON.stringify(uploadedImages)}
       />
-      <SingleImageDropzone
-        height={200}
-        width={200}
-        value={file}
-        onChange={setFile}
-        disabled={progress !== 'PENDING'}
+      <MultiImageDropzone
+        value={fileStates}
         dropzoneOptions={{
+          maxFiles: 6,
           maxSize: 1024 * 1024 * 10 // 10 MB
+        }}
+        onChange={setFileStates}
+        onFilesAdded={async (addedFiles) => {
+          setFileStates([...fileStates, ...addedFiles]);
         }}
       />
       <Button
         className="mt-2"
         onClick={async () => {
-          if (file) {
-            try {
-              const res = await edgestore.publicFiles.upload({
-                file,
-                onProgressChange: async (newProgress) => {
-                  setProgress(newProgress);
-                  if (newProgress === 100) {
-                    // wait 1 second to set it to complete
-                    // so that the user can see it at 100%
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                    setProgress('COMPLETE');
-                  }
+          await Promise.all(
+            fileStates.map(async (fileState) => {
+              try {
+                if (
+                  fileState.progress !== 'PENDING' ||
+                  typeof fileState.file === 'string'
+                ) {
+                  return;
                 }
-              });
-              setUploadedImages((prev) => [...prev, res.url]);
-              setUploadRes({
-                url: res.url,
-                filename: file.name
-              });
-            } catch (err) {
-              setProgress('ERROR');
-            }
-          }
+                const res = await edgestore.publicFiles.upload({
+                  file: fileState.file,
+                  onProgressChange: async (progress) => {
+                    updateFileProgress(fileState.key, progress);
+                    if (progress === 100) {
+                      // wait 1 second to set it to complete
+                      // so that the user can see the progress bar
+                      await new Promise((resolve) => setTimeout(resolve, 1000));
+                      updateFileProgress(fileState.key, 'COMPLETE');
+                    }
+                  }
+                });
+                setUploadedImages((prev) => [...prev, res.url]);
+                setUploadRes((uploadRes) => [
+                  ...uploadRes,
+                  {
+                    url: res.url,
+                    filename:
+                      typeof fileState.file === 'string'
+                        ? fileState.file
+                        : fileState.file.name
+                  }
+                ]);
+              } catch (err) {
+                updateFileProgress(fileState.key, 'ERROR');
+              }
+            })
+          );
         }}
-        disabled={!file || progress !== 'PENDING'}
+        disabled={
+          !fileStates.filter((fileState) => fileState.progress === 'PENDING')
+            .length
+        }
       >
-        {progress === 'PENDING'
-          ? 'Upload'
-          : progress === 'COMPLETE'
-            ? 'Done'
-            : typeof progress === 'number'
-              ? `Uploading (${Math.round(progress)}%)`
-              : 'Error'}
+        Upload
       </Button>
-      {uploadRes && (
+      {uploadRes.length > 0 && (
         <div className="mt-2">
-          <a
-            href={uploadRes.url}
-            target="_blank"
-            rel="noreferrer"
-            className="underline"
-          >
-            {uploadRes.filename}
-          </a>
+          {uploadRes.map((res) => (
+            <a
+              key={res.url}
+              className="mt-2 block underline"
+              href={res.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {res.filename}
+            </a>
+          ))}
         </div>
       )}
-      <div className="mt-4 space-y-2">
-        {uploadedImages.map((url, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <a
-              href={url}
-              target="_blank"
-              rel="noreferrer"
-              className="underline"
-            >
-              Image {index + 1}
-            </a>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() =>
-                setUploadedImages((prev) => prev.filter((_, i) => i !== index))
-              }
-            >
-              Remove
-            </Button>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
