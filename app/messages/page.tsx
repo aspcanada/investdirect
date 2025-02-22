@@ -6,7 +6,7 @@ import {
   CardTitle
 } from '@/components/ui/card';
 
-import { createUserMessage, deleteUserMessage } from '@/app/(home)/actions';
+import { createUserMessage, deleteUserMessage } from './actions';
 import { db } from 'app/db';
 import { auth } from '@clerk/nextjs/server';
 
