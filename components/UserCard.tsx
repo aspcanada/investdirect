@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { MessageCircle, UserPlus } from 'lucide-react';
 import moment from 'moment';
+import { Badge } from './ui/badge';
 
 interface UserCardProps {
   name: string;
@@ -31,19 +32,23 @@ const UserCard: FC<UserCardProps> = ({
   return (
     <Card>
       <CardHeader className="flex items-center">
-        <Avatar className="h-16 w-16">
+        <Avatar className="h-32 w-32">
           {avatarUrl ? (
             <AvatarImage src={avatarUrl} alt={name} />
           ) : (
             <AvatarFallback>{name.charAt(0)}</AvatarFallback>
           )}
         </Avatar>
-        <div>
-          <CardTitle className="text-lg">{name}</CardTitle>
-          <CardDescription>
-            Active: {lastSignInAt ? moment(lastSignInAt).fromNow() : 'Never'}
-          </CardDescription>
-        </div>
+        {/* <div> */}
+        <CardTitle className="text-lg">{name}</CardTitle>
+        <CardDescription className="flex flex-col gap-2">
+          {/* TODO: Add job title */}
+          <div>
+            <Badge>Lender</Badge>
+          </div>
+          Active: {lastSignInAt ? moment(lastSignInAt).fromNow() : 'Never'}
+        </CardDescription>
+        {/* </div> */}
       </CardHeader>
       <CardContent className="flex justify-center gap-2">
         <Button>
