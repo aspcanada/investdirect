@@ -67,7 +67,7 @@ export function DealsTable({
             {Math.max(0, Math.min(offset - dealsPerPage, totalDeals) + 1)}-
             {offset}
           </strong>{' '}
-          of <strong>{totalDeals}</strong> products
+          of <strong>{totalDeals}</strong> deals
         </div>
         <div className="flex">
           <Button

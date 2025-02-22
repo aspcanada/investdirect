@@ -9,8 +9,8 @@ import {
   Users2
 } from 'lucide-react';
 
-import { VercelLogo } from '../icons';
 import { NavItem } from './nav-item';
+import { VercelLogo } from '@/components/icons';
 
 import {
   Tooltip,
@@ -32,10 +32,6 @@ export function DesktopNav() {
 
         <NavItem href="/" label="Dashboard">
           <Home className="h-5 w-5" />
-        </NavItem>
-
-        <NavItem href="/products" label="Products">
-          <Package className="h-5 w-5" />
         </NavItem>
 
         <NavItem href="/deals" label="Deals">

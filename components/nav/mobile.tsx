@@ -45,13 +45,6 @@ export function MobileNav() {
             Dashboard
           </Link>
           <Link
-            href="/products"
-            className="flex items-center gap-4 px-2.5 text-foreground"
-          >
-            <Package className="h-5 w-5" />
-            Products
-          </Link>
-          <Link
             href="/deals"
             className="flex items-center gap-4 px-2.5 text-foreground"
           >
