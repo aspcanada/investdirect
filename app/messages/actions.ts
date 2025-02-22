@@ -1,8 +1,8 @@
 'use server'
 
 import { auth } from '@clerk/nextjs/server'
-import { UserMessages } from './db/schema/users'
-import { db } from './db'
+import { UserMessages } from '../db/schema/users'
+import { db } from '../db'
 import { eq } from 'drizzle-orm'
 
 export async function createUserMessage(formData: FormData) {

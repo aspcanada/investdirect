@@ -6,11 +6,11 @@ import {
   CardTitle
 } from '@/components/ui/card';
 
-import { createUserMessage, deleteUserMessage } from 'app/actions';
+import { createUserMessage, deleteUserMessage } from '@/app/(home)/actions';
 import { db } from 'app/db';
 import { auth } from '@clerk/nextjs/server';
 
-export default async function DashboardPage() {
+export default async function HomePage() {
   const { userId } = await auth();
   if (!userId) throw new Error('User not found');
   const existingMessage = await db.query.UserMessages.findFirst({
@@ -20,7 +20,7 @@ export default async function DashboardPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Dashboard</CardTitle>
+        <CardTitle>Home</CardTitle>
         <CardDescription>Dashboard cards here.</CardDescription>
       </CardHeader>
       <CardContent>
