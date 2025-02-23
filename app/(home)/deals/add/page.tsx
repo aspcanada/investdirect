@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { AddDealForm } from './add-form';
+import { DealForm } from '../_components/deal-form';
 
 export const metadata = {
   title: 'Add Deal',
@@ -19,7 +19,7 @@ export default function AddDealPage() {
         <CardTitle>Add a deal</CardTitle>
       </CardHeader>
       <CardContent>
-        <AddDealForm />
+        <DealForm mode="add" />
       </CardContent>
     </Card>
   );

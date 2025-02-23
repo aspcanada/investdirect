@@ -18,7 +18,7 @@ const dealInsertSchema = createInsertSchema(dealsTable, {
     repairCosts: z.number().optional(),
     amountNeeded: z.number().min(1, 'Amount needed is required'),
     interestRate: z.number().min(1, 'Interest rate is required'),
-    loanTerm: z.number().min(1, 'Loan term is required'),
+    loanTerm: z.number().min(1, 'Loan term is required')
   }),
   propertyDetails: z.object({
     propertyType: z.string().optional(), //TODO: change to enum
@@ -26,15 +26,15 @@ const dealInsertSchema = createInsertSchema(dealsTable, {
       street: z.string().min(1, 'Street is required'),
       city: z.string().min(1, 'City is required'),
       province: z.string().min(1, 'Province is required'),
-      postalCode: z.string().min(1, 'Postal code is required'),
+      postalCode: z.string().min(1, 'Postal code is required')
     }),
     bedrooms: z.number().optional(),
     bathrooms: z.number().optional(),
     year: z.number().min(1, 'Year is required'),
     buildingSf: z.number().optional(),
-    lotSizeSf: z.number().optional(),
+    lotSizeSf: z.number().optional()
   }),
-  images: z.array(z.string().url()).default([]),
+  images: z.array(z.string().url()).default([])
 });
 
 /**
@@ -64,7 +64,7 @@ export async function deleteDeal(
   prevState: {
     message: string;
   },
-  formData: FormData,
+  formData: FormData
 ) {
   const user = await auth();
 
@@ -73,10 +73,9 @@ export async function deleteDeal(
 
   // only allowed to delete your own deals
   if (user?.userId !== userId) {
-    console.log("User is not allowed to delete this deal");
+    console.log('User is not allowed to delete this deal');
     return { message: 'You are not allowed to delete this deal' };
   }
-
 
   // TODO: add a check to see if the deal is in the database
   // TODO: only allow admins to delete deals
@@ -86,7 +85,7 @@ export async function deleteDeal(
     revalidatePath('/deals');
     return { message: `Deleted deal ${dealId}` };
   } catch (e) {
-    console.error("Database Delete Error:", e);
+    console.error('Database Delete Error:', e);
     return { message: 'Failed to delete deal' };
   }
 }
@@ -102,95 +101,94 @@ export async function upsertDeal(
   formData: FormData
 ): Promise<ActionResponse> {
   const { userId } = await auth();
-  const dealId = formData.get("id") as string | null;
+  const dealId = formData.get('id') as string | null;
 
   // if (!userId) {
-  //   return { 
+  //   return {
   //     success: false,
-  //     message: "User must be authenticated to manage deals." 
+  //     message: "User must be authenticated to manage deals."
   //   };
   // }
-  
-  try {
-    let rawData: NewDeal;
-    rawData = {
-      userId: userId as string,
-      dealName: formData.get("dealName") as string,
-      description: formData.get("description") as string,
-      financials: {
-        value: Number(formData.get("value")),
-        repairCosts: Number(formData.get("repairCosts")),
-        amountNeeded: Number(formData.get("amountNeeded")),
-        interestRate: Number(formData.get("interestRate")),
-        loanTerm: Number(formData.get("loanTerm")),
+
+  let deal: NewDeal;
+  deal = {
+    userId: userId as string,
+    dealName: formData.get('dealName') as string,
+    description: formData.get('description') as string,
+    financials: {
+      value: Number(formData.get('value')),
+      repairCosts: Number(formData.get('repairCosts')),
+      amountNeeded: Number(formData.get('amountNeeded')),
+      interestRate: Number(formData.get('interestRate')),
+      loanTerm: Number(formData.get('loanTerm'))
+    },
+    propertyDetails: {
+      propertyType: formData.get('propertyType') as string,
+      address: {
+        street: formData.get('street') as string,
+        city: formData.get('city') as string,
+        province: formData.get('province') as string,
+        postalCode: formData.get('postalCode') as string
       },
-      propertyDetails: {
-        propertyType: formData.get("propertyType") as string,
-        address: {
-          street: formData.get("street") as string,
-          city: formData.get("city") as string,
-          province: formData.get("province") as string,
-          postalCode: formData.get("postalCode") as string,
-        },
-        bedrooms: Number(formData.get("bedrooms")),
-        bathrooms: Number(formData.get("bathrooms")),
-        year: Number(formData.get("year")),
-        buildingSf: Number(formData.get("buildingSf")),
-        lotSizeSf: Number(formData.get("lotSizeSf")),
-      },
-      images: JSON.parse(formData.get("images") as string || "[]"),
-      documents: [],
-    };
+      bedrooms: Number(formData.get('bedrooms')),
+      bathrooms: Number(formData.get('bathrooms')),
+      year: Number(formData.get('year')),
+      buildingSf: Number(formData.get('buildingSf')),
+      lotSizeSf: Number(formData.get('lotSizeSf'))
+    },
+    images: JSON.parse((formData.get('images') as string) || '[]'),
+    documents: []
+  };
 
-    if (dealId) {
-      rawData.id = dealId;
-      rawData.updatedAt = new Date();
-    }
+  if (dealId) {
+    deal.id = dealId;
+    deal.updatedAt = new Date();
+  }
 
-    // Validate the data
-    const validatedData = dealInsertSchema.safeParse(rawData);
+  // Validate the data
+  const validatedData = dealInsertSchema.safeParse(deal);
 
-    if (!validatedData.success) {
-      const formattedErrors = validatedData.error.issues.reduce((acc, issue) => {
-        acc[issue.path.join(".")] = [issue.message];
+  if (!validatedData.success) {
+    const formattedErrors = validatedData.error.issues.reduce(
+      (acc, issue) => {
+        acc[issue.path.join('.')] = [issue.message];
         return acc;
-      }, {} as { [key: string]: string[] });
+      },
+      {} as { [key: string]: string[] }
+    );
 
-      return {
-        success: false,
-        message: "Please fix the errors in the form",
-        errors: formattedErrors,
-        inputs: rawData as Deal // Type assertion since we're adding it to ActionResponse
-      };
-    }
+    return {
+      success: false,
+      message: 'Please fix the errors in the form',
+      errors: formattedErrors,
+      inputs: deal as Deal // Type assertion since we're adding it to ActionResponse
+    };
+  }
 
+  try {
     if (dealId) {
       // Update existing deal
-      await db.update(dealsTable)
+      await db
+        .update(dealsTable)
         .set({
-          ...rawData,
+          ...deal,
           updatedAt: new Date()
         })
         .where(eq(dealsTable.id, dealId));
     } else {
       // Create new deal
-      await db.insert(dealsTable).values(rawData);
+      await db.insert(dealsTable).values(deal);
     }
-
-    revalidatePath("/deals");
-    
   } catch (error) {
-    console.error("Database Upsert Error:", error);
-    return { 
-      success: false, 
-      message: dealId 
-        ? "Failed to update deal." 
-        : "Failed to create deal." 
+    console.error('Database Upsert Error:', error);
+    return {
+      success: false,
+      message: dealId ? 'Failed to update deal.' : 'Failed to create deal.'
     };
   }
-  
-  redirect("/deals");
 
+  revalidatePath('/deals');
+  redirect('/deals');
 }
 
 export async function getDeal(dealId: string): Promise<Deal | null> {
@@ -203,14 +201,13 @@ export async function getDeal(dealId: string): Promise<Deal | null> {
       return null;
     }
     return deal;
-
   } catch (error) {
     // console.error(error);
     return null;
   }
 }
 
-export async function getDeals( 
+export async function getDeals(
   search: string,
   offset: number
 ): Promise<{
@@ -237,7 +234,12 @@ export async function getDeals(
 
   let totalDeals = await db.select({ count: count() }).from(dealsTable);
   // order by created_at desc
-  let moreDeals = await db.select().from(dealsTable).orderBy(desc(dealsTable.createdAt)).limit(5).offset(offset);
+  let moreDeals = await db
+    .select()
+    .from(dealsTable)
+    .orderBy(desc(dealsTable.createdAt))
+    .limit(5)
+    .offset(offset);
   let newOffset = moreDeals.length >= 5 ? offset + 5 : null;
 
   return {

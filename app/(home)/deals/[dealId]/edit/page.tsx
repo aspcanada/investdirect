@@ -1,23 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DealForm } from '@/app/(home)/deals/_components/deal-form';
-import { db } from '@/app/db';
-import { dealsTable } from '@/app/db/schema/deals';
-import { eq } from 'drizzle-orm';
+import { DealForm } from '../../_components/deal-form';
 import { notFound } from 'next/navigation';
+import { getDeal } from '../../actions';
 
 export const metadata = {
   title: 'Edit Deal',
   description: 'Edit an existing deal'
 };
 
-export default async function EditDealPage({
-  params
-}: {
-  params: { id: string };
-}) {
-  const deal = await db.query.dealsTable.findFirst({
-    where: eq(dealsTable.id, params.id)
-  });
+interface EditDealPageProps {
+  params: Promise<{ dealId: string }>;
+}
+
+export default async function EditDealPage({ params }: EditDealPageProps) {
+  const { dealId } = await params;
+  const deal = await getDeal(dealId);
 
   if (!deal) {
     notFound();
