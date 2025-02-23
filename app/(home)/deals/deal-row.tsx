@@ -62,6 +62,9 @@ export function DealRow({ deal }: { deal: SelectDeal }) {
               <Link href={`/deals/${deal.id}`}>View</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
+              <Link href={`/deals/${deal.id}/edit`}>Edit</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
               <DeleteForm dealId={deal.id} userId={deal.userId} />
             </DropdownMenuItem>
           </DropdownMenuContent>

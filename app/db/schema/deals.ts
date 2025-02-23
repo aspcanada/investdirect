@@ -1,4 +1,4 @@
-// import 'server-only';
+import 'server-only';
 
 import { jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 // import { createInsertSchema } from 'drizzle-zod';
@@ -35,5 +35,6 @@ export const dealsTable = pgTable('deals', {
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
-export type SelectDeal = typeof dealsTable.$inferSelect;
-export type InsertDeal = typeof dealsTable.$inferInsert;
+// dealtypes
+export type Deal = typeof dealsTable.$inferSelect;
+export type NewDeal = typeof dealsTable.$inferInsert;

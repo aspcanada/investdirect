@@ -1,54 +1,26 @@
 import { notFound } from 'next/navigation';
-import { db } from '@/app/db';
-import { dealsTable } from '@/app/db/schema/deals';
-import { eq } from 'drizzle-orm';
 import { ImageCarousel } from './components/ImageCarousel';
 import { QuickFactsCard } from './components/QuickFactsCard';
 import { AboutDealCard } from './components/AboutDealCard';
 import { LocationCard } from './components/LocationCard';
 import { UserCard } from '@/components/UserCard';
-import { clerkClient } from '@clerk/nextjs/server';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { getDeal } from '../actions';
+import { getUser } from '../../members/actions';
 
 interface DealPageProps {
   params: Promise<{ dealId: string }>;
 }
 
-async function getDeal(dealId: string) {
-  'use server';
-  try {
-    const deal = await db.query.dealsTable.findFirst({
-      where: eq(dealsTable.id, dealId)
-    });
-
-    if (!deal) {
-      notFound();
-    }
-    return deal;
-  } catch (error) {
-    // console.error(error);
-    notFound();
-  }
-}
-
-async function getUser(userId: string) {
-  'use server';
-  const client = await clerkClient();
-  const user = await client.users.getUser(userId);
-  return {
-    id: user.id,
-    name: `${user.firstName} ${user.lastName}`,
-    avatarUrl: user.imageUrl,
-    lastSignInAt: user.lastSignInAt ?? undefined
-  };
-}
-
 export default async function DealPage({ params }: DealPageProps) {
   const { dealId } = await params;
   const deal = await getDeal(dealId);
-  // const deal = await getDeal(params.dealId);
+  if (!deal) {
+    notFound();
+  }
+
   const user = await getUser(deal.userId);
 
   return (

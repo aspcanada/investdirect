@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState, useState } from 'react';
-import { ActionResponse, createDeal } from './actions';
+import { ActionResponse, upsertDeal } from '../actions';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,7 @@ const initialState: ActionResponse = {
 };
 
 export function AddDealForm() {
-  const [state, action, isPending] = useActionState(createDeal, initialState);
+  const [state, action, isPending] = useActionState(upsertDeal, null);
 
   return (
     <>
