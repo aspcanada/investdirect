@@ -13,7 +13,7 @@ import Link from 'next/link';
 
 export const metadata = {
   title: 'Deals',
-  description: 'Browse and manage investment opportunities.'
+  description: 'Browse investment opportunities.'
 };
 
 export default async function DealsPage(props: {
@@ -23,7 +23,7 @@ export default async function DealsPage(props: {
   const offset = searchParams.offset ?? 0;
   const limit = 6;
 
-  const { deals, totalDeals } = await getDeals(Number(offset), limit);
+  const { deals, totalDeals } = await getDeals(Number(offset), limit, null);
 
   return (
     <Card>

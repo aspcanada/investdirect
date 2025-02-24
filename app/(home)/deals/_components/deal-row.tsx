@@ -16,7 +16,7 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import { useActionState } from 'react';
-import { deleteDeal } from './actions';
+import { deleteDeal } from '../actions';
 
 export function DealRow({ deal }: { deal: Deal }) {
   const [state, deleteDealAction] = useActionState(deleteDeal, { message: '' });

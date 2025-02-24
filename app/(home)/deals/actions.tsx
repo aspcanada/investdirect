@@ -209,7 +209,8 @@ export async function getDeal(dealId: string): Promise<Deal | null> {
 
 export async function getDeals(
   offset: number,
-  limit: number
+  limit: number,
+  userId: string | null
 ): Promise<{
   deals: Deal[];
   totalDeals: number;
@@ -218,13 +219,27 @@ export async function getDeals(
     return { deals: [], totalDeals: 0 };
   }
 
-  let totalDeals = await db.select({ count: count() }).from(dealsTable);
-  let deals = await db
-    .select()
-    .from(dealsTable)
-    .orderBy(desc(dealsTable.updatedAt))
-    .limit(limit)
-    .offset(offset);
+  let totalDeals: { count: number }[] = [];
+  let deals: Deal[] = [];
+
+  if (!userId) {
+    totalDeals = await db.select({ count: count() }).from(dealsTable);
+    deals = await db
+      .select()
+      .from(dealsTable)
+      .orderBy(desc(dealsTable.updatedAt))
+      .limit(limit)
+      .offset(offset);
+  } else {
+    totalDeals = await db.select({ count: count() }).from(dealsTable);
+    deals = await db
+      .select()
+      .from(dealsTable)
+      .where(eq(dealsTable.userId, userId))
+      .orderBy(desc(dealsTable.updatedAt))
+      .limit(limit)
+      .offset(offset);
+  }
 
   return {
     deals: deals,

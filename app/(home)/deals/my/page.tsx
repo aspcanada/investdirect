@@ -10,6 +10,8 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import Link from 'next/link';
+import { DealsTable } from '../_components/deal-table';
+import { auth } from '@clerk/nextjs/server';
 
 export const metadata = {
   title: 'My Deals',
@@ -21,14 +23,20 @@ export default async function DealsPage(props: {
 }) {
   const searchParams = await props.searchParams;
   const offset = searchParams.offset ?? 0;
-  const limit = 6;
+  const limit = 5;
 
-  const { deals, totalDeals } = await getDeals(Number(offset), limit);
+  const user = await auth();
+
+  const { deals, totalDeals } = await getDeals(
+    Number(offset),
+    limit,
+    user?.userId
+  );
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Deals</CardTitle>
+        <CardTitle>My Deals</CardTitle>
         <CardDescription>
           Manage your deals and view their performance.
         </CardDescription>
@@ -44,7 +52,7 @@ export default async function DealsPage(props: {
             </Button>
           </Link>
         </div>
-        <DealsGrid
+        <DealsTable
           deals={deals}
           offset={Number(offset)}
           totalDeals={totalDeals}
