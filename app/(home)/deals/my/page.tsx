@@ -1,7 +1,7 @@
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { DealsGrid } from './_components/deal-grid';
-import { getDeals } from './actions';
+import { DealsGrid } from '../_components/deal-grid';
+import { getDeals } from '../actions';
 import {
   Card,
   CardContent,
@@ -12,8 +12,8 @@ import {
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Deals',
-  description: 'Browse and manage investment opportunities.'
+  title: 'My Deals',
+  description: 'Browse and manage your investment opportunities.'
 };
 
 export default async function DealsPage(props: {
