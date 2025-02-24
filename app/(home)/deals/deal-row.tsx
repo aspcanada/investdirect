@@ -1,21 +1,26 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { ImageIcon, MoreHorizontal } from 'lucide-react';
+import { Eye, ImageIcon, Pencil, Trash2 } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Deal } from 'app/db/schema/deals';
-import { DeleteForm } from './delete-form';
-import { useRouter } from 'next/navigation';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog';
+import { useActionState } from 'react';
+import { deleteDeal } from './actions';
 
 export function DealRow({ deal }: { deal: Deal }) {
-  const router = useRouter();
+  const [state, deleteDealAction] = useActionState(deleteDeal, { message: '' });
+
   // check to see if there is an image
   const hasImage = deal.images.length > 0;
 
@@ -49,26 +54,48 @@ export function DealRow({ deal }: { deal: Deal }) {
         {deal.createdAt.toLocaleDateString('en-US')}
       </TableCell> */}
       <TableCell>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button aria-haspopup="true" size="icon" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Link href={`/deals/${deal.id}`}>View</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link href={`/deals/${deal.id}/edit`}>Edit</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <DeleteForm dealId={deal.id} userId={deal.userId} />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* add view/edit/delete buttons instead of dropdown */}
+        <div className="flex gap-2">
+          <Button variant="outline" size="icon">
+            <Link href={`/deals/${deal.id}`}>
+              <Eye />
+            </Link>
+          </Button>
+          <Button variant="outline" size="icon">
+            <Link href={`/deals/${deal.id}/edit`}>
+              <Pencil />
+            </Link>
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="icon">
+                <Trash2 />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the
+                  deal &quot;{deal.dealName}&quot; and all associated data.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <form action={deleteDealAction}>
+                  <input type="hidden" name="dealId" value={deal.id} />
+                  <input type="hidden" name="userId" value={deal.userId} />
+                  <AlertDialogAction
+                    type="submit"
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </form>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </TableCell>
     </TableRow>
   );
