@@ -20,12 +20,10 @@ export default async function DealsPage(props: {
   searchParams: Promise<{ q: string; offset: string }>;
 }) {
   const searchParams = await props.searchParams;
-  const search = searchParams.q ?? '';
   const offset = searchParams.offset ?? 0;
-  const { deals, newOffset, totalDeals } = await getDeals(
-    search,
-    Number(offset)
-  );
+  const limit = 5;
+
+  const { deals, totalDeals } = await getDeals(Number(offset), limit);
 
   return (
     <Card>
@@ -48,8 +46,9 @@ export default async function DealsPage(props: {
         </div>
         <DealsTable
           deals={deals}
-          offset={newOffset ?? 0}
+          offset={Number(offset)}
           totalDeals={totalDeals}
+          limit={limit}
         />
       </CardContent>
     </Card>

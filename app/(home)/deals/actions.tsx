@@ -208,45 +208,26 @@ export async function getDeal(dealId: string): Promise<Deal | null> {
 }
 
 export async function getDeals(
-  search: string,
-  offset: number
+  offset: number,
+  limit: number
 ): Promise<{
   deals: Deal[];
-  newOffset: number | null;
   totalDeals: number;
 }> {
-  // Always search the full table, not per page
-  if (search) {
-    return {
-      deals: await db
-        .select()
-        .from(dealsTable)
-        .where(ilike(dealsTable.dealName, `%${search}%`))
-        .orderBy(desc(dealsTable.updatedAt)) // Order by updatedAt in descending order
-        .limit(1000),
-      newOffset: null,
-      totalDeals: 0
-    };
-  }
-
   if (offset === null) {
-    return { deals: [], newOffset: null, totalDeals: 0 };
+    return { deals: [], totalDeals: 0 };
   }
 
   let totalDeals = await db.select({ count: count() }).from(dealsTable);
-  // order by updatedAt desc
-  let moreDeals = await db
+  let deals = await db
     .select()
     .from(dealsTable)
-    .orderBy(desc(dealsTable.updatedAt)) // Order by updatedAt in descending order
-    .limit(5)
+    .orderBy(desc(dealsTable.updatedAt))
+    .limit(limit)
     .offset(offset);
 
-  let newOffset = moreDeals.length >= 5 ? offset + 5 : null;
-
   return {
-    deals: moreDeals,
-    newOffset,
+    deals: deals,
     totalDeals: totalDeals[0].count
   };
 }
