@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { SelectDeal } from '@/app/db/schema/deals';
+import type { Deal } from '@/app/db/schema/deals';
 import { formatCurrency } from '@/lib/utils';
 
 interface AboutDealCardProps {
   description: string;
-  financials: SelectDeal['financials'];
-  propertyDetails: SelectDeal['propertyDetails'];
+  financials: Deal['financials'];
+  propertyDetails: Deal['propertyDetails'];
 }
 
 export function AboutDealCard({
