@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { useEdgeStore } from '@/lib/edgestore';
@@ -567,17 +567,14 @@ export function DealForm({ mode, deal }: DealFormProps) {
           <Card className="my-5 w-full mx-auto">
             <CardHeader>
               <CardTitle>Property Images</CardTitle>
+              <p className="text-sm text-gray-500">
+                You can upload up to 3 images for your deal.
+              </p>
             </CardHeader>
             <CardContent>
-              {mode === 'edit' && (
-                <div className="space-y-2">
-                  <Label htmlFor="images">Images</Label>
-                  <p className="text-sm text-gray-500">
-                    You can upload up to 3 images for your deal.
-                  </p>
-                </div>
-              )}
-              <MultiImageExample />
+              <MultiImageExample
+                existingImages={mode === 'edit' ? deal?.images : undefined}
+              />
             </CardContent>
           </Card>
 
@@ -599,15 +596,12 @@ export function DealForm({ mode, deal }: DealFormProps) {
   );
 }
 
-function MultiImageExample() {
+function MultiImageExample({ existingImages }: { existingImages?: string[] }) {
   const [fileStates, setFileStates] = useState<FileState[]>([]);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [uploadRes, setUploadRes] = useState<
-    {
-      url: string;
-      filename: string;
-    }[]
-  >([]);
+  const [existingImageUrls, setExistingImageUrls] = useState<string[]>(
+    existingImages || []
+  );
+  const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
   const { edgestore } = useEdgeStore();
 
   function updateFileProgress(key: string, progress: FileState['progress']) {
@@ -623,19 +617,49 @@ function MultiImageExample() {
     });
   }
 
+  const handleDelete = async (urlToDelete: string) => {
+    try {
+      setUrlToDelete(urlToDelete);
+      await edgestore.publicFiles.delete({
+        url: urlToDelete
+      });
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    } finally {
+      setExistingImageUrls((prev) => prev.filter((url) => url !== urlToDelete));
+      setUrlToDelete(null);
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center">
-      <input
-        type="hidden"
-        name="images"
-        value={JSON.stringify(uploadedImages)}
-      />
+    <div className="space-y-4">
+      {existingImageUrls.map((url) => (
+        <div key={url} className="relative">
+          <img
+            src={url}
+            alt="Uploaded property"
+            className="w-full h-48 object-cover rounded-lg"
+          />
+          <Button
+            variant={'destructive'}
+            size="icon"
+            type="button"
+            onClick={() => handleDelete(url)}
+            disabled={urlToDelete === url}
+            className="absolute top-2 right-2"
+          >
+            <Trash2 />
+          </Button>
+        </div>
+      ))}
+
       <MultiFileDropzone
         value={fileStates}
         dropzoneOptions={{
           maxFiles: 3,
-          maxSize: 1024 * 1024 * 2 // 2 MB
+          maxSize: 1024 * 1024 * 2
         }}
+        disabled={existingImageUrls.length >= 3}
         onChange={setFileStates}
         onFilesAdded={async (addedFiles) => {
           setFileStates([...fileStates, ...addedFiles]);
@@ -647,30 +671,28 @@ function MultiImageExample() {
                   onProgressChange: async (progress) => {
                     updateFileProgress(addedFileState.key, progress);
                     if (progress === 100) {
-                      // wait 1 second to set it to complete
-                      // so that the user can see the progress bar
                       await new Promise((resolve) => setTimeout(resolve, 1000));
                       updateFileProgress(addedFileState.key, 'COMPLETE');
                     }
                   }
                 });
-                setUploadedImages((prev) => [...prev, res.url]);
-                setUploadRes((uploadRes) => [
-                  ...uploadRes,
-                  {
-                    url: res.url,
-                    filename:
-                      typeof addedFileState.file === 'string'
-                        ? addedFileState.file
-                        : addedFileState.file.name
-                  }
-                ]);
+                setExistingImageUrls((prev) => [...prev, res.url]);
+                // Remove the completed upload from fileStates
+                setFileStates((prev) =>
+                  prev.filter((state) => state.key !== addedFileState.key)
+                );
               } catch (err) {
                 updateFileProgress(addedFileState.key, 'ERROR');
               }
             })
           );
         }}
+      />
+
+      <input
+        type="hidden"
+        name="images"
+        value={JSON.stringify(existingImageUrls)}
       />
     </div>
   );
