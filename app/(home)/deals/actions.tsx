@@ -222,6 +222,7 @@ export async function getDeals(
         .select()
         .from(dealsTable)
         .where(ilike(dealsTable.dealName, `%${search}%`))
+        .orderBy(desc(dealsTable.updatedAt)) // Order by updatedAt in descending order
         .limit(1000),
       newOffset: null,
       totalDeals: 0
@@ -233,13 +234,14 @@ export async function getDeals(
   }
 
   let totalDeals = await db.select({ count: count() }).from(dealsTable);
-  // order by created_at desc
+  // order by updatedAt desc
   let moreDeals = await db
     .select()
     .from(dealsTable)
-    .orderBy(desc(dealsTable.createdAt))
+    .orderBy(desc(dealsTable.updatedAt)) // Order by updatedAt in descending order
     .limit(5)
     .offset(offset);
+
   let newOffset = moreDeals.length >= 5 ? offset + 5 : null;
 
   return {
