@@ -3,8 +3,8 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card';
+  CardTitle,
+} from '@/components/ui/card'
 
 export default async function HomePage() {
   return (
@@ -17,5 +17,5 @@ export default async function HomePage() {
       </CardHeader>
       <CardContent></CardContent>
     </Card>
-  );
+  )
 }

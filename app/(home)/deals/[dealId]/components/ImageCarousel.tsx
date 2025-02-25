@@ -1,16 +1,16 @@
-import Image from 'next/image';
-import { Card, CardContent } from '@/components/ui/card';
-import { ImageIcon } from 'lucide-react';
+import Image from 'next/image'
+import { Card, CardContent } from '@/components/ui/card'
+import { ImageIcon } from 'lucide-react'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
-  CarouselPrevious
-} from '@/components/ui/carousel';
+  CarouselPrevious,
+} from '@/components/ui/carousel'
 
 interface ImageCarouselProps {
-  images: string[];
+  images: string[]
 }
 
 export function ImageCarousel({ images }: ImageCarouselProps) {
@@ -24,7 +24,7 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
           </div>
         </CardContent>
       </Card>
-    );
+    )
   }
 
   return (
@@ -46,5 +46,5 @@ export function ImageCarousel({ images }: ImageCarouselProps) {
       <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2" />
       <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2" />
     </Carousel>
-  );
+  )
 }

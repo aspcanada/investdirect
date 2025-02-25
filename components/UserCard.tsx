@@ -1,24 +1,24 @@
-'use client';
+'use client'
 
-import { FC } from 'react';
+import { FC } from 'react'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { MessageCircle, UserPlus } from 'lucide-react';
-import moment from 'moment';
-import { Badge } from './ui/badge';
+  CardTitle,
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { MessageCircle, UserPlus } from 'lucide-react'
+import moment from 'moment'
+import { Badge } from './ui/badge'
 
 interface UserCardProps {
-  name: string;
-  id: string;
-  avatarUrl?: string;
-  lastSignInAt?: number;
+  name: string
+  id: string
+  avatarUrl?: string
+  lastSignInAt?: number
   // onMessageClick: () => void;
 }
 
@@ -26,7 +26,7 @@ const UserCard: FC<UserCardProps> = ({
   name,
   id,
   avatarUrl,
-  lastSignInAt
+  lastSignInAt,
   // onMessageClick
 }) => {
   return (
@@ -61,7 +61,7 @@ const UserCard: FC<UserCardProps> = ({
         </Button>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export { UserCard };
+export { UserCard }

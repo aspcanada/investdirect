@@ -1,17 +1,17 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { Deal } from '@/app/db/schema/deals';
-import { formatCurrency } from '@/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { Deal } from '@/app/db/schema/deals'
+import { formatCurrency } from '@/lib/utils'
 
 interface AboutDealCardProps {
-  description: string;
-  financials: Deal['financials'];
-  propertyDetails: Deal['propertyDetails'];
+  description: string
+  financials: Deal['financials']
+  propertyDetails: Deal['propertyDetails']
 }
 
 export function AboutDealCard({
   description,
   financials,
-  propertyDetails
+  propertyDetails,
 }: AboutDealCardProps) {
   return (
     <Card>
@@ -55,5 +55,5 @@ export function AboutDealCard({
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

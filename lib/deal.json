@@ -1,6 +1,6 @@
- {
-    "id": "0bef163d-0088-487e-8c7b-5252b9b1afa5",
-    "dealInfo": {
+{
+  "id": "0bef163d-0088-487e-8c7b-5252b9b1afa5",
+  "dealInfo": {
     "amount": 150677,
     "rate": 10,
     "term": 3,
@@ -12,17 +12,17 @@
     "marketabilityRanking": 6,
     "paymentFrequency": "Yearly",
     "details": "Inventore et aperiam ipsum corporis beatae natus. Veritatis ratione doloremque. Asperiores laudantium eligendi placeat pariatur praesentium. Labore pariatur in deleniti accusamus similique sit aliquid facilis exercitationem. Eligendi architecto perspiciatis soluta omnis voluptatem dignissimos aut."
-    },
-    "propertyInfo": {
+  },
+  "propertyInfo": {
     "address": {
-        "street": "934 Reinger Fall",
-        "city": "Sudbury",
-        "province": "Quebec",
-        "postalCode": "G0M 2F3"
+      "street": "934 Reinger Fall",
+      "city": "Sudbury",
+      "province": "Quebec",
+      "postalCode": "G0M 2F3"
     },
     "legalDescription": "Minus quaerat laborum.",
     "encumbrances": [
-        {
+      {
         "mtgPosition": 2,
         "mtgHolder": "Conn and Sons",
         "mtgNumber": "8af1b05c-9787-4441-b187-16ed4c0f0e05",
@@ -32,7 +32,7 @@
         "interestRate": 8.5,
         "maturityDate": "2023-11-04T10:47:17.864Z",
         "arrears": 2975
-        }
+      }
     ],
     "title": "Leasehold",
     "annualPropertyTax": 1937,
@@ -49,32 +49,30 @@
     "numUnits": 4,
     "rentalIncome": 1003,
     "images": [
-        "https://loremflickr.com/640/480/house?lock=74120",
-        "https://loremflickr.com/640/480/house?lock=89348",
-        "https://loremflickr.com/640/480/house?lock=80347"
+      "https://loremflickr.com/640/480/house?lock=74120",
+      "https://loremflickr.com/640/480/house?lock=89348",
+      "https://loremflickr.com/640/480/house?lock=80347"
     ]
-    },
-    "valuation": {
+  },
+  "valuation": {
     "appraisalCompany": "Jones - Brekke",
     "appraiserName": "Kathryn Langworth",
     "appraisalDate": "2023-02-18T01:40:21.448Z",
     "appraisedValue": 340118,
     "assessedValue": 279062
-    },
-    "label": [
-    "Expired"
-    ],
-    "borrower": {
+  },
+  "label": ["Expired"],
+  "borrower": {
     "profile": {
-        "id": "37312959-0a3b-4593-8793-58b7e191c94e",
-        "firstName": "Florian",
-        "lastName": "Rath",
-        "email": "Abigayle87@gmail.com",
-        "phone": "245-991-0047",
-        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/709.jpg",
-        "occupation": "Corporate Optimization Consultant",
-        "isLender": true,
-        "isBorrower": true
+      "id": "37312959-0a3b-4593-8793-58b7e191c94e",
+      "firstName": "Florian",
+      "lastName": "Rath",
+      "email": "Abigayle87@gmail.com",
+      "phone": "245-991-0047",
+      "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/709.jpg",
+      "occupation": "Corporate Optimization Consultant",
+      "isLender": true,
+      "isBorrower": true
     }
-    }
+  }
 }

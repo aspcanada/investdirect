@@ -1,22 +1,22 @@
-import '@/app/globals.css';
+import '@/app/globals.css'
 
-import Providers from '../providers';
-import { Analytics } from '@vercel/analytics/react';
-import { SearchInput } from '@/app/search';
-import { UserButton } from '@clerk/nextjs';
-import { MobileNav } from '@/components/nav/mobile';
-import { DesktopNav } from '@/components/nav/desktop';
+import Providers from '../providers'
+import { Analytics } from '@vercel/analytics/react'
+import { SearchInput } from '@/app/search'
+import { UserButton } from '@clerk/nextjs'
+import { MobileNav } from '@/components/nav/mobile'
+import { DesktopNav } from '@/components/nav/desktop'
 
 export const metadata = {
   title: 'Next.js App Router + NextAuth + Tailwind CSS',
   description:
-    'A user admin dashboard configured with Next.js, Postgres, Clerk, Tailwind CSS, TypeScript, and Prettier.'
-};
+    'A user admin dashboard configured with Next.js, Postgres, Clerk, Tailwind CSS, TypeScript, and Prettier.',
+}
 
 export default function DashboardLayout({
-  children
+  children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <Providers>
@@ -35,5 +35,5 @@ export default function DashboardLayout({
         <Analytics />
       </main>
     </Providers>
-  );
+  )
 }

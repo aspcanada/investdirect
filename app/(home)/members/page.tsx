@@ -3,18 +3,18 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import { UserCard } from '@/components/UserCard';
-import { getUsers } from './actions';
+  CardTitle,
+} from '@/components/ui/card'
+import { UserCard } from '@/components/UserCard'
+import { getUsers } from './actions'
 
 export const metadata = {
   title: 'Members',
-  description: 'Browse members.'
-};
+  description: 'Browse members.',
+}
 
 export default async function UsersPage() {
-  const { users, totalCount } = await getUsers();
+  const { users, totalCount } = await getUsers()
 
   return (
     <Card>
@@ -37,5 +37,5 @@ export default async function UsersPage() {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -1,27 +1,27 @@
-import { notFound } from 'next/navigation';
-import { ImageCarousel } from './components/ImageCarousel';
-import { QuickFactsCard } from './components/QuickFactsCard';
-import { AboutDealCard } from './components/AboutDealCard';
-import { LocationCard } from './components/LocationCard';
-import { UserCard } from '@/components/UserCard';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
-import { getDeal } from '../actions';
-import { getUser } from '../../members/actions';
+import { notFound } from 'next/navigation'
+import { ImageCarousel } from './components/ImageCarousel'
+import { QuickFactsCard } from './components/QuickFactsCard'
+import { AboutDealCard } from './components/AboutDealCard'
+import { LocationCard } from './components/LocationCard'
+import { UserCard } from '@/components/UserCard'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import { getDeal } from '../actions'
+import { getUser } from '../../members/actions'
 
 interface DealPageProps {
-  params: Promise<{ dealId: string }>;
+  params: Promise<{ dealId: string }>
 }
 
 export default async function DealPage({ params }: DealPageProps) {
-  const { dealId } = await params;
-  const deal = await getDeal(dealId);
+  const { dealId } = await params
+  const deal = await getDeal(dealId)
   if (!deal) {
-    notFound();
+    notFound()
   }
 
-  const user = await getUser(deal.userId);
+  const user = await getUser(deal.userId)
 
   return (
     <main className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
@@ -69,5 +69,5 @@ export default async function DealPage({ params }: DealPageProps) {
         </section>
       </div>
     </main>
-  );
+  )
 }

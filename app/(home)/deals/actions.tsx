@@ -1,14 +1,14 @@
-'use server';
+'use server'
 
-import { dealsTable, NewDeal } from 'app/db/schema/deals';
-import { count, eq, ilike, sql, desc } from 'drizzle-orm';
-import { db } from 'app/db';
-import { revalidatePath } from 'next/cache';
-import { auth } from '@clerk/nextjs/server';
-import { z } from 'zod';
-import { notFound, redirect } from 'next/navigation';
-import { createInsertSchema } from 'drizzle-zod';
-import { Deal } from 'app/db/schema/deals';
+import { dealsTable, NewDeal } from 'app/db/schema/deals'
+import { count, eq, ilike, sql, desc } from 'drizzle-orm'
+import { db } from 'app/db'
+import { revalidatePath } from 'next/cache'
+import { auth } from '@clerk/nextjs/server'
+import { z } from 'zod'
+import { notFound, redirect } from 'next/navigation'
+import { createInsertSchema } from 'drizzle-zod'
+import { Deal } from 'app/db/schema/deals'
 
 const dealInsertSchema = createInsertSchema(dealsTable, {
   dealName: z.string().min(1, 'Deal name is required'),
@@ -18,7 +18,7 @@ const dealInsertSchema = createInsertSchema(dealsTable, {
     repairCosts: z.number().optional(),
     amountNeeded: z.number().min(1, 'Amount needed is required'),
     interestRate: z.number().min(1, 'Interest rate is required'),
-    loanTerm: z.number().min(1, 'Loan term is required')
+    loanTerm: z.number().min(1, 'Loan term is required'),
   }),
   propertyDetails: z.object({
     propertyType: z.string().optional(), //TODO: change to enum
@@ -26,16 +26,16 @@ const dealInsertSchema = createInsertSchema(dealsTable, {
       street: z.string().min(1, 'Street is required'),
       city: z.string().min(1, 'City is required'),
       province: z.string().min(1, 'Province is required'),
-      postalCode: z.string().min(1, 'Postal code is required')
+      postalCode: z.string().min(1, 'Postal code is required'),
     }),
     bedrooms: z.number().optional(),
     bathrooms: z.number().optional(),
     year: z.number().min(1, 'Year is required'),
     buildingSf: z.number().optional(),
-    lotSizeSf: z.number().optional()
+    lotSizeSf: z.number().optional(),
   }),
-  images: z.array(z.string().url()).default([])
-});
+  images: z.array(z.string().url()).default([]),
+})
 
 /**
  * Utility type to generate all possible nested paths of an object type
@@ -46,47 +46,47 @@ type NestedPaths<T> = T extends object
   ? {
       [K in keyof T & (string | number)]: T[K] extends object
         ? `${K}` | `${K}.${NestedPaths<T[K]>}`
-        : `${K}`;
+        : `${K}`
     }[keyof T & (string | number)]
-  : never;
+  : never
 
 export interface ActionResponse {
-  success: boolean;
-  message: string;
+  success: boolean
+  message: string
   errors?: {
-    [K in NestedPaths<Deal>]?: string[];
-  };
-  inputs?: Deal;
+    [K in NestedPaths<Deal>]?: string[]
+  }
+  inputs?: Deal
 }
 
 // see https://github.com/vercel/next.js/blob/canary/examples/next-forms/app/actions.ts
 export async function deleteDeal(
   prevState: {
-    message: string;
+    message: string
   },
-  formData: FormData
+  formData: FormData,
 ) {
-  const user = await auth();
+  const user = await auth()
 
-  const userId = formData.get('userId');
-  const dealId = formData.get('dealId');
+  const userId = formData.get('userId')
+  const dealId = formData.get('dealId')
 
   // only allowed to delete your own deals
   if (user?.userId !== userId) {
-    console.log('User is not allowed to delete this deal');
-    return { message: 'You are not allowed to delete this deal' };
+    console.log('User is not allowed to delete this deal')
+    return { message: 'You are not allowed to delete this deal' }
   }
 
   // TODO: add a check to see if the deal is in the database
   // TODO: only allow admins to delete deals
 
   try {
-    await db.delete(dealsTable).where(eq(dealsTable.id, dealId as string));
-    revalidatePath('/deals');
-    return { message: `Deleted deal ${dealId}` };
+    await db.delete(dealsTable).where(eq(dealsTable.id, dealId as string))
+    revalidatePath('/deals')
+    return { message: `Deleted deal ${dealId}` }
   } catch (e) {
-    console.error('Database Delete Error:', e);
-    return { message: 'Failed to delete deal' };
+    console.error('Database Delete Error:', e)
+    return { message: 'Failed to delete deal' }
   }
 }
 
@@ -98,10 +98,10 @@ export async function deleteDeal(
  */
 export async function upsertDeal(
   prevState: ActionResponse | null,
-  formData: FormData
+  formData: FormData,
 ): Promise<ActionResponse> {
-  const { userId } = await auth();
-  const dealId = formData.get('id') as string | null;
+  const { userId } = await auth()
+  const dealId = formData.get('id') as string | null
 
   // if (!userId) {
   //   return {
@@ -110,7 +110,7 @@ export async function upsertDeal(
   //   };
   // }
 
-  let deal: NewDeal;
+  let deal: NewDeal
   deal = {
     userId: userId as string,
     dealName: formData.get('dealName') as string,
@@ -120,7 +120,7 @@ export async function upsertDeal(
       repairCosts: Number(formData.get('repairCosts')),
       amountNeeded: Number(formData.get('amountNeeded')),
       interestRate: Number(formData.get('interestRate')),
-      loanTerm: Number(formData.get('loanTerm'))
+      loanTerm: Number(formData.get('loanTerm')),
     },
     propertyDetails: {
       propertyType: formData.get('propertyType') as string,
@@ -128,41 +128,41 @@ export async function upsertDeal(
         street: formData.get('street') as string,
         city: formData.get('city') as string,
         province: formData.get('province') as string,
-        postalCode: formData.get('postalCode') as string
+        postalCode: formData.get('postalCode') as string,
       },
       bedrooms: Number(formData.get('bedrooms')),
       bathrooms: Number(formData.get('bathrooms')),
       year: Number(formData.get('year')),
       buildingSf: Number(formData.get('buildingSf')),
-      lotSizeSf: Number(formData.get('lotSizeSf'))
+      lotSizeSf: Number(formData.get('lotSizeSf')),
     },
     images: JSON.parse((formData.get('images') as string) || '[]'),
-    documents: []
-  };
+    documents: [],
+  }
 
   if (dealId) {
-    deal.id = dealId;
-    deal.updatedAt = new Date();
+    deal.id = dealId
+    deal.updatedAt = new Date()
   }
 
   // Validate the data
-  const validatedData = dealInsertSchema.safeParse(deal);
+  const validatedData = dealInsertSchema.safeParse(deal)
 
   if (!validatedData.success) {
     const formattedErrors = validatedData.error.issues.reduce(
       (acc, issue) => {
-        acc[issue.path.join('.')] = [issue.message];
-        return acc;
+        acc[issue.path.join('.')] = [issue.message]
+        return acc
       },
-      {} as { [key: string]: string[] }
-    );
+      {} as { [key: string]: string[] },
+    )
 
     return {
       success: false,
       message: 'Please fix the errors in the form',
       errors: formattedErrors,
-      inputs: deal as Deal // Type assertion since we're adding it to ActionResponse
-    };
+      inputs: deal as Deal, // Type assertion since we're adding it to ActionResponse
+    }
   }
 
   try {
@@ -172,77 +172,77 @@ export async function upsertDeal(
         .update(dealsTable)
         .set({
           ...deal,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         })
-        .where(eq(dealsTable.id, dealId));
+        .where(eq(dealsTable.id, dealId))
     } else {
       // Create new deal
-      await db.insert(dealsTable).values(deal);
+      await db.insert(dealsTable).values(deal)
     }
   } catch (error) {
-    console.error('Database Upsert Error:', error);
+    console.error('Database Upsert Error:', error)
     return {
       success: false,
-      message: dealId ? 'Failed to update deal.' : 'Failed to create deal.'
-    };
+      message: dealId ? 'Failed to update deal.' : 'Failed to create deal.',
+    }
   }
 
-  revalidatePath('/deals');
-  redirect('/deals');
+  revalidatePath('/deals')
+  redirect('/deals')
 }
 
 export async function getDeal(dealId: string): Promise<Deal | null> {
   try {
     const deal = await db.query.dealsTable.findFirst({
-      where: eq(dealsTable.id, dealId)
-    });
+      where: eq(dealsTable.id, dealId),
+    })
 
     if (!deal) {
-      return null;
+      return null
     }
-    return deal;
+    return deal
   } catch (error) {
     // console.error(error);
-    return null;
+    return null
   }
 }
 
 export async function getDeals(
   offset: number,
   limit: number,
-  userId: string | null
+  userId: string | null,
 ): Promise<{
-  deals: Deal[];
-  totalDeals: number;
+  deals: Deal[]
+  totalDeals: number
 }> {
   if (offset === null) {
-    return { deals: [], totalDeals: 0 };
+    return { deals: [], totalDeals: 0 }
   }
 
-  let totalDeals: { count: number }[] = [];
-  let deals: Deal[] = [];
+  let totalDeals: { count: number }[] = []
+  let deals: Deal[] = []
 
   if (!userId) {
-    totalDeals = await db.select({ count: count() }).from(dealsTable);
+    totalDeals = await db.select({ count: count() }).from(dealsTable)
     deals = await db
       .select()
       .from(dealsTable)
       .orderBy(desc(dealsTable.updatedAt))
       .limit(limit)
-      .offset(offset);
+      .offset(offset)
   } else {
-    totalDeals = await db.select({ count: count() }).from(dealsTable);
+    totalDeals = await db.select({ count: count() }).from(dealsTable)
     deals = await db
       .select()
       .from(dealsTable)
       .where(eq(dealsTable.userId, userId))
       .orderBy(desc(dealsTable.updatedAt))
       .limit(limit)
-      .offset(offset);
+      .offset(offset)
   }
 
   return {
     deals: deals,
-    totalDeals: totalDeals[0].count
-  };
+    totalDeals: totalDeals[0].count,
+  }
 }

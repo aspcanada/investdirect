@@ -1,14 +1,14 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MapPin } from 'lucide-react';
-import Link from 'next/link';
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { MapPin } from 'lucide-react'
+import Link from 'next/link'
 interface LocationCardProps {
   address: {
-    street: string;
-    city: string;
-    province: string;
-    postalCode: string;
-  };
+    street: string
+    city: string
+    province: string
+    postalCode: string
+  }
 }
 
 export function LocationCard({ address }: LocationCardProps) {
@@ -37,5 +37,5 @@ export function LocationCard({ address }: LocationCardProps) {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

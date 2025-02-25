@@ -1,45 +1,45 @@
-'use client';
+'use client'
 
 import {
   TableHead,
   TableRow,
   TableHeader,
   TableBody,
-  Table
-} from '@/components/ui/table';
-import { DealRow } from './deal-row';
-import { Deal } from 'app/db/schema/deals';
-import { useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+  Table,
+} from '@/components/ui/table'
+import { DealRow } from './deal-row'
+import { Deal } from 'app/db/schema/deals'
+import { useRouter } from 'next/navigation'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export function DealsTable({
   deals,
   offset,
   totalDeals,
-  limit
+  limit,
 }: {
-  deals: Deal[];
-  offset: number;
-  totalDeals: number;
-  limit: number;
+  deals: Deal[]
+  offset: number
+  totalDeals: number
+  limit: number
 }) {
-  let router = useRouter();
-  let dealsPerPage = limit;
+  let router = useRouter()
+  let dealsPerPage = limit
 
   function prevPage() {
-    const newOffset = Math.max(0, offset - dealsPerPage);
-    router.push(`/deals?offset=${newOffset}`, { scroll: false });
+    const newOffset = Math.max(0, offset - dealsPerPage)
+    router.push(`/deals?offset=${newOffset}`, { scroll: false })
   }
 
   function nextPage() {
-    const newOffset = offset + dealsPerPage;
-    router.push(`/deals?offset=${newOffset}`, { scroll: false });
+    const newOffset = offset + dealsPerPage
+    router.push(`/deals?offset=${newOffset}`, { scroll: false })
   }
 
   // Calculate current page range
-  const start = offset + 1;
-  const end = Math.min(offset + dealsPerPage, totalDeals);
+  const start = offset + 1
+  const end = Math.min(offset + dealsPerPage, totalDeals)
 
   return (
     <>
@@ -100,5 +100,5 @@ export function DealsTable({
         </div>
       </form>
     </>
-  );
+  )
 }

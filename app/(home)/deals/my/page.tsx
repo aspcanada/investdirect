@@ -1,37 +1,37 @@
-import { PlusCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { DealsGrid } from '../_components/deal-grid';
-import { getDeals } from '../actions';
+import { PlusCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { DealsGrid } from '../_components/deal-grid'
+import { getDeals } from '../actions'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import Link from 'next/link';
-import { DealsTable } from '../_components/deal-table';
-import { auth } from '@clerk/nextjs/server';
+  CardTitle,
+} from '@/components/ui/card'
+import Link from 'next/link'
+import { DealsTable } from '../_components/deal-table'
+import { auth } from '@clerk/nextjs/server'
 
 export const metadata = {
   title: 'My Deals',
-  description: 'Browse and manage your investment opportunities.'
-};
+  description: 'Browse and manage your investment opportunities.',
+}
 
 export default async function DealsPage(props: {
-  searchParams: Promise<{ q: string; offset: string }>;
+  searchParams: Promise<{ q: string; offset: string }>
 }) {
-  const searchParams = await props.searchParams;
-  const offset = searchParams.offset ?? 0;
-  const limit = 5;
+  const searchParams = await props.searchParams
+  const offset = searchParams.offset ?? 0
+  const limit = 5
 
-  const user = await auth();
+  const user = await auth()
 
   const { deals, totalDeals } = await getDeals(
     Number(offset),
     limit,
-    user?.userId
-  );
+    user?.userId,
+  )
 
   return (
     <Card>
@@ -60,5 +60,5 @@ export default async function DealsPage(props: {
         />
       </CardContent>
     </Card>
-  );
+  )
 }

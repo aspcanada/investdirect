@@ -1,9 +1,9 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Eye, ImageIcon, Pencil, Trash2 } from 'lucide-react';
-import { TableCell, TableRow } from '@/components/ui/table';
-import { Deal } from 'app/db/schema/deals';
+import Image from 'next/image'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Eye, ImageIcon, Pencil, Trash2 } from 'lucide-react'
+import { TableCell, TableRow } from '@/components/ui/table'
+import { Deal } from 'app/db/schema/deals'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,16 +13,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog';
-import { useActionState } from 'react';
-import { deleteDeal } from '../actions';
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { useActionState } from 'react'
+import { deleteDeal } from '../actions'
 
 export function DealRow({ deal }: { deal: Deal }) {
-  const [state, deleteDealAction] = useActionState(deleteDeal, { message: '' });
+  const [state, deleteDealAction] = useActionState(deleteDeal, { message: '' })
 
   // check to see if there is an image
-  const hasImage = deal.images.length > 0;
+  const hasImage = deal.images.length > 0
 
   const imageElement = hasImage ? (
     <Image
@@ -36,7 +36,7 @@ export function DealRow({ deal }: { deal: Deal }) {
     <div className="flex h-16 w-16 items-center justify-center rounded-md bg-muted">
       <ImageIcon className="h-8 w-8 text-muted-foreground" />
     </div>
-  );
+  )
 
   return (
     <TableRow>
@@ -98,5 +98,5 @@ export function DealRow({ deal }: { deal: Deal }) {
         </div>
       </TableCell>
     </TableRow>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import 'server-only';
+import 'server-only'
 
 import { loadEnvConfig } from '@next/env'
 import { neon } from '@neondatabase/serverless'
@@ -14,6 +14,6 @@ if (!process.env.DATABASE_URL) {
 const sql = neon(process.env.DATABASE_URL)
 export const db = drizzle(sql, {
   schema: {
-    dealsTable
-  }
-});
+    dealsTable,
+  },
+})

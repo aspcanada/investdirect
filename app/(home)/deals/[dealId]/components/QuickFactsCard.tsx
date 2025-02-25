@@ -1,18 +1,18 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatCurrency } from '@/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { formatCurrency } from '@/lib/utils'
 
 interface QuickFactsCardProps {
-  dealName: string;
-  amount: number;
-  interestRate: number;
-  term: number;
+  dealName: string
+  amount: number
+  interestRate: number
+  term: number
 }
 
 export function QuickFactsCard({
   dealName,
   amount,
   interestRate,
-  term
+  term,
 }: QuickFactsCardProps) {
   return (
     <Card>
@@ -36,5 +36,5 @@ export function QuickFactsCard({
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

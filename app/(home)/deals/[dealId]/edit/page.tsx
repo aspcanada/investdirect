@@ -1,23 +1,23 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DealForm } from '../../_components/deal-form';
-import { notFound } from 'next/navigation';
-import { getDeal } from '../../actions';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { DealForm } from '../../_components/deal-form'
+import { notFound } from 'next/navigation'
+import { getDeal } from '../../actions'
 
 export const metadata = {
   title: 'Edit Deal',
-  description: 'Edit an existing deal'
-};
+  description: 'Edit an existing deal',
+}
 
 interface EditDealPageProps {
-  params: Promise<{ dealId: string }>;
+  params: Promise<{ dealId: string }>
 }
 
 export default async function EditDealPage({ params }: EditDealPageProps) {
-  const { dealId } = await params;
-  const deal = await getDeal(dealId);
+  const { dealId } = await params
+  const deal = await getDeal(dealId)
 
   if (!deal) {
-    notFound();
+    notFound()
   }
 
   return (
@@ -29,5 +29,5 @@ export default async function EditDealPage({ params }: EditDealPageProps) {
         <DealForm mode="edit" deal={deal} />
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
 import {
   FolderClosed,
@@ -6,17 +6,17 @@ import {
   Package,
   PanelLeft,
   Settings,
-  Users2
-} from 'lucide-react';
+  Users2,
+} from 'lucide-react'
 
-import { NavItem } from './nav-item';
-import { VercelLogo } from '@/components/icons';
+import { NavItem } from './nav-item'
+import { VercelLogo } from '@/components/icons'
 
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip';
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export function DesktopNav() {
   return (
@@ -57,5 +57,5 @@ export function DesktopNav() {
         </Tooltip>
       </nav>
     </aside>
-  );
+  )
 }

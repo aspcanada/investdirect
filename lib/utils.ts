@@ -1,5 +1,5 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -9,8 +9,8 @@ export function cn(...inputs: ClassValue[]) {
  * Formats a number as currency in CAD
  */
 export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat("en-CA", {
+  return new Intl.NumberFormat('en-CA', {
     // style: "currency",
-    currency: "CAD",
-  }).format(amount);
-};
+    currency: 'CAD',
+  }).format(amount)
+}

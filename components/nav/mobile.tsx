@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
 import {
   FolderClosed,
@@ -6,17 +6,17 @@ import {
   Package,
   PanelLeft,
   Settings,
-  Users2
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+  Users2,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
   SheetTitle,
-  SheetTrigger
-} from '@/components/ui/sheet';
+  SheetTrigger,
+} from '@/components/ui/sheet'
 
-import { VercelLogo } from '@/components/icons';
+import { VercelLogo } from '@/components/icons'
 
 export function MobileNav() {
   return (
@@ -61,5 +61,5 @@ export function MobileNav() {
         </nav>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

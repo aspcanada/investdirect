@@ -3,14 +3,14 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import { DealForm } from '../_components/deal-form';
+  CardTitle,
+} from '@/components/ui/card'
+import { DealForm } from '../_components/deal-form'
 
 export const metadata = {
   title: 'Add Deal',
-  description: 'Add a new deal to the database'
-};
+  description: 'Add a new deal to the database',
+}
 
 export default function AddDealPage() {
   return (
@@ -22,5 +22,5 @@ export default function AddDealPage() {
         <DealForm mode="add" />
       </CardContent>
     </Card>
-  );
+  )
 }

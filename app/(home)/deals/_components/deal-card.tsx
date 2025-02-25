@@ -1,18 +1,18 @@
-'use client';
+'use client'
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { ImageIcon } from 'lucide-react';
-import { Deal } from 'app/db/schema/deals';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { formatCurrency } from '@/lib/utils';
+import Image from 'next/image'
+import Link from 'next/link'
+import { ImageIcon } from 'lucide-react'
+import { Deal } from 'app/db/schema/deals'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { formatCurrency } from '@/lib/utils'
 
 interface DealCardProps {
-  deal: Deal;
+  deal: Deal
 }
 
 export function DealCard({ deal }: DealCardProps) {
-  const hasImage = deal.images.length > 0;
+  const hasImage = deal.images.length > 0
 
   return (
     <Card className="overflow-hidden">
@@ -67,5 +67,5 @@ export function DealCard({ deal }: DealCardProps) {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
