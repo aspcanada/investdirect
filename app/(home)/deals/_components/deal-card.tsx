@@ -6,6 +6,7 @@ import { ImageIcon } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { formatCurrency } from '@/lib/utils'
 import { DealWithUser } from 'app/db/queries/deals-with-users'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface DealCardProps {
   deal: DealWithUser
@@ -13,6 +14,7 @@ interface DealCardProps {
 
 export function DealCard({ deal }: DealCardProps) {
   const hasImage = deal.images.length > 0
+  const userInitials = `${deal.user.firstName[0]}${deal.user.lastName[0]}`
 
   return (
     <Card className="overflow-hidden">
@@ -44,7 +46,7 @@ export function DealCard({ deal }: DealCardProps) {
           </p>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-muted-foreground">Amount Needed</p>
@@ -64,6 +66,15 @@ export function DealCard({ deal }: DealCardProps) {
             <p className="text-muted-foreground">Property Type</p>
             <p className="font-medium">{deal.propertyDetails.propertyType}</p>
           </div>
+        </div>
+        <div className="flex items-center space-x-2 pt-2">
+          <Avatar className="h-6 w-6">
+            <AvatarImage src={deal.user.avatarUrl || undefined} />
+            <AvatarFallback>{userInitials}</AvatarFallback>
+          </Avatar>
+          <span className="text-sm text-muted-foreground">
+            {deal.user.firstName} {deal.user.lastName}
+          </span>
         </div>
       </CardContent>
     </Card>
