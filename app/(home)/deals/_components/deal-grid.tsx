@@ -1,12 +1,12 @@
 'use client'
 
-import { Deal } from 'app/db/schema/deals'
+import { DealWithUser } from 'app/db/queries/deals-with-users'
 import { DealCard } from './deal-card'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 interface DealsGridProps {
-  deals: Deal[]
+  deals: DealWithUser[]
   offset: number
   totalDeals: number
   limit: number
@@ -26,7 +26,7 @@ export function DealsGrid({
     <div className="space-y-8">
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {deals.map((deal) => (
-          <DealCard key={deal.id} deal={deal} />
+          <DealCard key={deal.dealId} deal={deal} />
         ))}
       </div>
 

@@ -9,6 +9,11 @@ import { z } from 'zod'
 import { notFound, redirect } from 'next/navigation'
 import { createInsertSchema } from 'drizzle-zod'
 import { Deal } from 'app/db/schema/deals'
+import {
+  DealWithUser,
+  getDealsCount,
+  getDealsWithUsers,
+} from '@/app/db/queries/deals-with-users'
 
 const dealInsertSchema = createInsertSchema(dealsTable, {
   dealName: z.string().min(1, 'Deal name is required'),
@@ -207,7 +212,7 @@ export async function getDeal(dealId: string): Promise<Deal | null> {
   }
 }
 
-export async function getDeals(
+export async function getDealsOld(
   offset: number,
   limit: number,
   userId: string | null,
@@ -244,5 +249,29 @@ export async function getDeals(
   return {
     deals: deals,
     totalDeals: totalDeals[0].count,
+  }
+}
+
+export async function getDeals(
+  offset: number,
+  limit: number,
+  userId: string | undefined,
+): Promise<{
+  deals: DealWithUser[]
+  totalDeals: number
+}> {
+  const deals = await getDealsWithUsers({
+    limit: limit,
+    offset: offset,
+    userId: userId,
+  })
+
+  const totalDeals = await getDealsCount({
+    userId: userId,
+  })
+
+  return {
+    deals: deals,
+    totalDeals: totalDeals,
   }
 }

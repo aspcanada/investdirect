@@ -3,12 +3,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ImageIcon } from 'lucide-react'
-import { Deal } from 'app/db/schema/deals'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { formatCurrency } from '@/lib/utils'
+import { DealWithUser } from 'app/db/queries/deals-with-users'
 
 interface DealCardProps {
-  deal: Deal
+  deal: DealWithUser
 }
 
 export function DealCard({ deal }: DealCardProps) {
@@ -33,7 +33,7 @@ export function DealCard({ deal }: DealCardProps) {
       <CardHeader>
         <div className="space-y-1">
           <Link
-            href={`/deals/${deal.id}`}
+            href={`/deals/${deal.dealId}`}
             className="text-xl font-semibold hover:underline"
           >
             {deal.dealName}
