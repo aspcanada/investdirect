@@ -7,8 +7,7 @@ import { UserCard } from '@/components/UserCard'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { getDeal } from '../actions'
-import { getUser } from '../../members/actions'
+import { getDealWithUser } from '@/app/db/queries/deals-with-users'
 
 interface DealPageProps {
   params: Promise<{ dealId: string }>
@@ -16,12 +15,10 @@ interface DealPageProps {
 
 export default async function DealPage({ params }: DealPageProps) {
   const { dealId } = await params
-  const deal = await getDeal(dealId)
+  const deal = await getDealWithUser(dealId)
   if (!deal) {
     notFound()
   }
-
-  const user = await getUser(deal.userId)
 
   return (
     <main className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
@@ -61,10 +58,10 @@ export default async function DealPage({ params }: DealPageProps) {
         <section className="space-y-8">
           <LocationCard address={deal.propertyDetails.address} />
           <UserCard
-            name={user.name}
-            id={user.id}
-            avatarUrl={user.avatarUrl}
-            lastSignInAt={user.lastSignInAt}
+            name={`${deal.user.firstName} ${deal.user.lastName}`}
+            id={deal.user.id}
+            avatarUrl={deal.user.avatarUrl || undefined}
+            // lastSignInAt={deal.user.createdAt.getTime()}
           />
         </section>
       </div>
