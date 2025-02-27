@@ -11,9 +11,7 @@ export default async function HomePage() {
     <Card>
       <CardHeader>
         <CardTitle>Home</CardTitle>
-        <CardDescription>
-          Home page here. Maybe a dashboard of sorts?
-        </CardDescription>
+        <CardDescription>Home page here. Maybe a dashboard?</CardDescription>
       </CardHeader>
       <CardContent></CardContent>
     </Card>
