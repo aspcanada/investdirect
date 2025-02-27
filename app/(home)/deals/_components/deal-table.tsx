@@ -8,7 +8,7 @@ import {
   Table,
 } from '@/components/ui/table'
 import { DealRow } from './deal-row'
-import { Deal } from 'app/db/schema/deals'
+import { DealWithUser } from '@/app/db/queries/deals-with-users'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -19,7 +19,7 @@ export function DealsTable({
   totalDeals,
   limit,
 }: {
-  deals: Deal[]
+  deals: DealWithUser[]
   offset: number
   totalDeals: number
   limit: number
@@ -64,7 +64,7 @@ export function DealsTable({
         </TableHeader>
         <TableBody>
           {deals.map((deal) => (
-            <DealRow key={deal.id} deal={deal} />
+            <DealRow key={deal.dealId} deal={deal} />
           ))}
         </TableBody>
       </Table>

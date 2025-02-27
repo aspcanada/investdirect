@@ -30,7 +30,7 @@ export default async function DealsPage(props: {
   const { deals, totalDeals } = await getDeals(
     Number(offset),
     limit,
-    user?.userId,
+    user!.userId!,
   )
 
   return (

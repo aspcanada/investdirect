@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Eye, ImageIcon, Pencil, Trash2 } from 'lucide-react'
 import { TableCell, TableRow } from '@/components/ui/table'
-import { Deal } from 'app/db/schema/deals'
+import { DealWithUser } from '@/app/db/queries/deals-with-users'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,7 +18,7 @@ import {
 import { useActionState } from 'react'
 import { deleteDeal } from '../actions'
 
-export function DealRow({ deal }: { deal: Deal }) {
+export function DealRow({ deal }: { deal: DealWithUser }) {
   const [state, deleteDealAction] = useActionState(deleteDeal, { message: '' })
 
   // check to see if there is an image
@@ -42,7 +42,7 @@ export function DealRow({ deal }: { deal: Deal }) {
     <TableRow>
       <TableCell className="hidden sm:table-cell">{imageElement}</TableCell>
       <TableCell>
-        <Link href={`/deals/${deal.id}`}>{deal.dealName}</Link>
+        <Link href={`/deals/${deal.dealId}`}>{deal.dealName}</Link>
       </TableCell>
       <TableCell>{`$${deal.financials.amountNeeded}`}</TableCell>
       <TableCell>{`${deal.financials.interestRate}%`}</TableCell>
@@ -57,12 +57,12 @@ export function DealRow({ deal }: { deal: Deal }) {
         {/* add view/edit/delete buttons instead of dropdown */}
         <div className="flex gap-2">
           <Button variant="outline" size="icon">
-            <Link href={`/deals/${deal.id}`}>
+            <Link href={`/deals/${deal.dealId}`}>
               <Eye />
             </Link>
           </Button>
           <Button variant="outline" size="icon">
-            <Link href={`/deals/${deal.id}/edit`}>
+            <Link href={`/deals/${deal.dealId}/edit`}>
               <Pencil />
             </Link>
           </Button>
@@ -83,8 +83,8 @@ export function DealRow({ deal }: { deal: Deal }) {
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <form action={deleteDealAction}>
-                  <input type="hidden" name="dealId" value={deal.id} />
-                  <input type="hidden" name="userId" value={deal.userId} />
+                  <input type="hidden" name="dealId" value={deal.dealId} />
+                  <input type="hidden" name="userId" value={deal.user.id} />
                   <AlertDialogAction
                     type="submit"
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"

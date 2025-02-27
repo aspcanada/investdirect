@@ -23,7 +23,7 @@ export default async function DealsPage(props: {
   const offset = searchParams.offset ?? 0
   const limit = 6
 
-  const { deals, totalDeals } = await getDeals(Number(offset), limit, null)
+  const { deals, totalDeals } = await getDeals(Number(offset), limit, undefined)
 
   return (
     <Card>
