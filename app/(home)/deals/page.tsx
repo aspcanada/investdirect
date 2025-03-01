@@ -30,7 +30,8 @@ export default async function DealsPage(props: {
       <CardHeader>
         <CardTitle>Deals</CardTitle>
         <CardDescription>
-          Manage your deals and view their performance.
+          Manage <Link href="/deals/my">your deals</Link> and view their
+          performance.
         </CardDescription>
       </CardHeader>
       <CardContent>

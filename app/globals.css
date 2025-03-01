@@ -83,10 +83,13 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+  }
+  a {
+    @apply text-primary hover:text-primary/80;
   }
 }
 
@@ -104,13 +107,4 @@ input[type='search']::-moz-search-cancel-button {
 /* Microsoft Edge */
 input[type='search']::-ms-clear {
   display: none;
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
 }
