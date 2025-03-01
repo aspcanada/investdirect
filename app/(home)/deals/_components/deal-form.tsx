@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { upsertDeal } from '../actions'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -9,6 +10,16 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { CheckCircle2, Trash2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 import { useEdgeStore } from '@/lib/edgestore'
 import {
@@ -23,13 +34,30 @@ interface DealFormProps {
 }
 export function DealForm({ mode, deal }: DealFormProps) {
   const [state, action, isPending] = useActionState(upsertDeal, null)
+  const router = useRouter()
+  const [hasChanges, setHasChanges] = useState(false)
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+
+  const handleFormChange = () => {
+    if (!hasChanges) {
+      setHasChanges(true)
+    }
+  }
+
+  const handleCancel = () => {
+    if (hasChanges) {
+      setShowConfirmDialog(true)
+    } else {
+      router.back()
+    }
+  }
 
   return (
     <>
       <div className="max-w-2xl mx-auto mt-10 p-6">
         {/* <h1 className="text-2xl font-semibold mb-4">Add a New Deal</h1> */}
 
-        <form action={action} autoComplete="on">
+        <form action={action} autoComplete="on" onChange={handleFormChange}>
           {mode === 'edit' && (
             <input type="hidden" name="id" value={deal?.id} />
           )}
@@ -585,12 +613,41 @@ export function DealForm({ mode, deal }: DealFormProps) {
             </Alert>
           )}
 
-          <div className="mt-5">
+          <div className="mt-5 flex gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? 'Saving...' : 'Save Deal'}
             </Button>
           </div>
         </form>
+
+        <AlertDialog
+          open={showConfirmDialog}
+          onOpenChange={setShowConfirmDialog}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Discard Changes?</AlertDialogTitle>
+              <AlertDialogDescription>
+                You have unsaved changes. Are you sure you want to leave? Your
+                changes will be lost.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Continue Editing</AlertDialogCancel>
+              <AlertDialogAction onClick={() => router.back()}>
+                Discard Changes
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </>
   )
