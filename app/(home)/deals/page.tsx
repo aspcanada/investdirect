@@ -12,8 +12,9 @@ import {
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Deals',
-  description: 'Browse investment opportunities.',
+  title: 'Deals | InvestDirect Community',
+  description:
+    'Browse and invest in real estate opportunities in our trusted community.',
 }
 
 export default async function DealsPage(props: {

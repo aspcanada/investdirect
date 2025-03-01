@@ -6,6 +6,11 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 
+export const metadata = {
+  title: 'Home | InvestDirect Community',
+  description: 'Your real estate investment dashboard and community hub.',
+}
+
 export default async function HomePage() {
   return (
     <Card>

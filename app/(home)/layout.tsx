@@ -8,9 +8,9 @@ import { MobileNav } from '@/components/nav/mobile'
 import { DesktopNav } from '@/components/nav/desktop'
 
 export const metadata = {
-  title: 'Next.js App Router + NextAuth + Tailwind CSS',
+  title: 'Dashboard | InvestDirect Community',
   description:
-    'A user admin dashboard configured with Next.js, Postgres, Clerk, Tailwind CSS, TypeScript, and Prettier.',
+    'Manage your real estate investments and connect with our community.',
 }
 
 export default function DashboardLayout({
