@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Terms of Use | Mr ALM',
+  title: 'Terms of Use | InvestDirect',
   description:
-    'Terms of Use for Mr ALM - Understanding your rights and obligations when using our platform.',
+    'Terms of Use for InvestDirect - Understanding your rights and obligations when using our platform.',
 }
 
 export default function TermsOfUse() {
   const lastUpdated = new Date('2025-03-01').toLocaleDateString('en-CA')
-  const contactEmail = 'hi@mr-arm-length-mortgage.com'
+  const contactEmail = 'hello@investdirect.community'
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -19,9 +19,9 @@ export default function TermsOfUse() {
         <div className="space-y-6">
           <section>
             <p>
-              Welcome to Mr ALM. By accessing or using our website and services,
-              you agree to be bound by these Terms of Use ("Terms"). Please read
-              these Terms carefully before using our platform.
+              Welcome to InvestDirect. By accessing or using our website and
+              services, you agree to be bound by these Terms of Use ("Terms").
+              Please read these Terms carefully before using our platform.
             </p>
           </section>
 
@@ -30,7 +30,7 @@ export default function TermsOfUse() {
               1. Acceptance of Terms
             </h2>
             <p>
-              By accessing or using Mr ALM's website and services (the
+              By accessing or using InvestDirect's website and services (the
               "Platform"), you acknowledge that you have read, understood, and
               agree to be bound by these Terms, as well as our Privacy Policy.
               If you do not agree to these Terms, please do not use our
@@ -118,9 +118,9 @@ export default function TermsOfUse() {
             </h2>
             <p>
               All content on the Platform, including but not limited to text,
-              graphics, logos, images, and software, is the property of Mr ALM
-              or its licensors and is protected by Canadian and international
-              intellectual property laws.
+              graphics, logos, images, and software, is the property of
+              InvestDirect or its licensors and is protected by Canadian and
+              international intellectual property laws.
             </p>
           </section>
 
@@ -141,10 +141,10 @@ export default function TermsOfUse() {
               8. Limitation of Liability
             </h2>
             <p>
-              To the maximum extent permitted by law, Mr ALM and its affiliates
-              shall not be liable for any indirect, incidental, special,
-              consequential, or punitive damages arising from your use of the
-              Platform.
+              To the maximum extent permitted by law, InvestDirect and its
+              affiliates shall not be liable for any indirect, incidental,
+              special, consequential, or punitive damages arising from your use
+              of the Platform.
             </p>
           </section>
 
@@ -154,7 +154,7 @@ export default function TermsOfUse() {
             </h2>
             <div className="space-y-4">
               <p>
-                Mr ALM operates in compliance with applicable Canadian
+                InvestDirect operates in compliance with applicable Canadian
                 securities laws and regulations, including:
               </p>
               <ul className="list-disc ml-6">

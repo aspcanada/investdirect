@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Mr ALM',
+  title: 'Privacy Policy | InvestDirect',
   description:
-    'Privacy Policy for Mr ALM - Learn how we collect, use, and protect your information.',
+    'Privacy Policy for InvestDirect - Learn how we collect, use, and protect your information.',
 }
 
 export default function PrivacyPolicy() {
   const lastUpdated = new Date('2025-03-01').toLocaleDateString('en-CA')
-  const contactEmail = 'hi@mr-arm-length-mortgage.com'
+  const contactEmail = 'hello@investdirect.community'
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -18,11 +18,11 @@ export default function PrivacyPolicy() {
 
         <div className="space-y-6">
           <p>
-            Mr ALM ("we," "our," or "us") values your privacy. This Privacy
-            Policy outlines how we collect, use, and protect your information
-            when you visit our website (the "Site"). This Site is intended for
-            use by individuals who are above the age of majority in their
-            respective Canadian province or territory.
+            InvestDirect ("we," "our," or "us") values your privacy. This
+            Privacy Policy outlines how we collect, use, and protect your
+            information when you visit our website (the "Site"). This Site is
+            intended for use by individuals who are above the age of majority in
+            their respective Canadian province or territory.
           </p>
 
           <p>
