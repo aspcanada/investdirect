@@ -56,16 +56,16 @@ export function DealRow({ deal }: { deal: DealWithUser }) {
       <TableCell>
         {/* add view/edit/delete buttons instead of dropdown */}
         <div className="flex gap-2">
-          <Button variant="outline" size="icon">
-            <Link href={`/deals/${deal.dealId}`}>
+          <Link href={`/deals/${deal.dealId}`}>
+            <Button variant="outline" size="icon">
               <Eye />
-            </Link>
-          </Button>
-          <Button variant="outline" size="icon">
-            <Link href={`/deals/${deal.dealId}/edit`}>
+            </Button>
+          </Link>
+          <Link href={`/deals/${deal.dealId}/edit`}>
+            <Button variant="outline" size="icon">
               <Pencil />
-            </Link>
-          </Button>
+            </Button>
+          </Link>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" size="icon">
