@@ -29,12 +29,12 @@ export function DealsTable({
 
   function prevPage() {
     const newOffset = Math.max(0, offset - dealsPerPage)
-    router.push(`/deals?offset=${newOffset}`, { scroll: false })
+    router.push(`/deals/my?offset=${newOffset}`, { scroll: false })
   }
 
   function nextPage() {
     const newOffset = offset + dealsPerPage
-    router.push(`/deals?offset=${newOffset}`, { scroll: false })
+    router.push(`/deals/my?offset=${newOffset}`, { scroll: false })
   }
 
   // Calculate current page range
