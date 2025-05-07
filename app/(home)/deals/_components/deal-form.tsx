@@ -1,63 +1,35 @@
-'use client'
+'use client';
 
-import { useActionState, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { upsertDeal } from '../actions'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { CheckCircle2, Trash2 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+import { useActionState, useState } from 'react';
+import { upsertDeal } from '../actions';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { CheckCircle2, Trash2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { useEdgeStore } from '@/lib/edgestore'
+import { useEdgeStore } from '@/lib/edgestore';
 import {
   MultiFileDropzone,
-  type FileState,
-} from '@/components/upload/multi-file'
-import { Deal } from '@/app/db/schema/deals'
+  type FileState
+} from '@/components/upload/multi-file';
+import { Deal } from '@/app/db/schema/deals';
 
 interface DealFormProps {
-  mode: 'add' | 'edit'
-  deal?: Deal
+  mode: 'add' | 'edit';
+  deal?: Deal;
 }
 export function DealForm({ mode, deal }: DealFormProps) {
-  const [state, action, isPending] = useActionState(upsertDeal, null)
-  const router = useRouter()
-  const [hasChanges, setHasChanges] = useState(false)
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
-
-  const handleFormChange = () => {
-    if (!hasChanges) {
-      setHasChanges(true)
-    }
-  }
-
-  const handleCancel = () => {
-    if (hasChanges) {
-      setShowConfirmDialog(true)
-    } else {
-      router.back()
-    }
-  }
+  const [state, action, isPending] = useActionState(upsertDeal, null);
 
   return (
     <>
       <div className="max-w-2xl mx-auto mt-10 p-6">
         {/* <h1 className="text-2xl font-semibold mb-4">Add a New Deal</h1> */}
 
-        <form action={action} autoComplete="on" onChange={handleFormChange}>
+        <form action={action} autoComplete="on">
           {mode === 'edit' && (
             <input type="hidden" name="id" value={deal?.id} />
           )}
@@ -613,78 +585,53 @@ export function DealForm({ mode, deal }: DealFormProps) {
             </Alert>
           )}
 
-          <div className="mt-5 flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={handleCancel}
-            >
-              Cancel
-            </Button>
+          <div className="mt-5">
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? 'Saving...' : 'Save Deal'}
             </Button>
           </div>
         </form>
-
-        <AlertDialog
-          open={showConfirmDialog}
-          onOpenChange={setShowConfirmDialog}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Discard Changes?</AlertDialogTitle>
-              <AlertDialogDescription>
-                You have unsaved changes. Are you sure you want to leave? Your
-                changes will be lost.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Continue Editing</AlertDialogCancel>
-              <AlertDialogAction onClick={() => router.back()}>
-                Discard Changes
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
       </div>
     </>
-  )
+  );
 }
 
 function MultiImageExample({ existingImages }: { existingImages?: string[] }) {
-  const [fileStates, setFileStates] = useState<FileState[]>([])
+  const [fileStates, setFileStates] = useState<FileState[]>([]);
   const [existingImageUrls, setExistingImageUrls] = useState<string[]>(
-    existingImages || [],
-  )
-  const [urlToDelete, setUrlToDelete] = useState<string | null>(null)
-  const { edgestore } = useEdgeStore()
+    existingImages || []
+  );
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { edgestore } = useEdgeStore();
 
   function updateFileProgress(key: string, progress: FileState['progress']) {
     setFileStates((fileStates) => {
-      const newFileStates = structuredClone(fileStates)
-      const fileState = newFileStates.find((fileState) => fileState.key === key)
+      const newFileStates = structuredClone(fileStates);
+      const fileState = newFileStates.find(
+        (fileState) => fileState.key === key
+      );
       if (fileState) {
-        fileState.progress = progress
+        fileState.progress = progress;
       }
-      return newFileStates
-    })
+      return newFileStates;
+    });
   }
 
   const handleDelete = async (urlToDelete: string) => {
     try {
-      setUrlToDelete(urlToDelete)
+      // setIsDeleting(true);
       await edgestore.publicFiles.delete({
-        url: urlToDelete,
-      })
+        url: urlToDelete
+      });
+      setExistingImageUrls((prev) => prev.filter((url) => url !== urlToDelete));
+    } catch (EdgeStoreError e) {
+      console.error('Error deleting image:', e);
     } catch (error) {
-      console.error('Error deleting image:', error)
+      console.error('Error deleting image:', error);
     } finally {
-      setExistingImageUrls((prev) => prev.filter((url) => url !== urlToDelete))
-      setUrlToDelete(null)
+      // setIsDeleting(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-4">
@@ -700,9 +647,26 @@ function MultiImageExample({ existingImages }: { existingImages?: string[] }) {
             size="icon"
             type="button"
             onClick={() => handleDelete(url)}
-            disabled={urlToDelete === url}
+            // disabled={isDeleting}
             className="absolute top-2 right-2"
           >
+            {/* {isDeleting ? (
+              <span className="loading">...</span>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )} */}
+            {/* lucide icon */}
             <Trash2 />
           </Button>
         </div>
@@ -712,35 +676,35 @@ function MultiImageExample({ existingImages }: { existingImages?: string[] }) {
         value={fileStates}
         dropzoneOptions={{
           maxFiles: 3,
-          maxSize: 1024 * 1024 * 2,
+          maxSize: 1024 * 1024 * 2
         }}
         disabled={existingImageUrls.length >= 3}
         onChange={setFileStates}
         onFilesAdded={async (addedFiles) => {
-          setFileStates([...fileStates, ...addedFiles])
+          setFileStates([...fileStates, ...addedFiles]);
           await Promise.all(
             addedFiles.map(async (addedFileState) => {
               try {
                 const res = await edgestore.publicFiles.upload({
                   file: addedFileState.file as File,
                   onProgressChange: async (progress) => {
-                    updateFileProgress(addedFileState.key, progress)
+                    updateFileProgress(addedFileState.key, progress);
                     if (progress === 100) {
-                      await new Promise((resolve) => setTimeout(resolve, 1000))
-                      updateFileProgress(addedFileState.key, 'COMPLETE')
+                      await new Promise((resolve) => setTimeout(resolve, 1000));
+                      updateFileProgress(addedFileState.key, 'COMPLETE');
                     }
-                  },
-                })
-                setExistingImageUrls((prev) => [...prev, res.url])
+                  }
+                });
+                setExistingImageUrls((prev) => [...prev, res.url]);
                 // Remove the completed upload from fileStates
                 setFileStates((prev) =>
-                  prev.filter((state) => state.key !== addedFileState.key),
-                )
+                  prev.filter((state) => state.key !== addedFileState.key)
+                );
               } catch (err) {
-                updateFileProgress(addedFileState.key, 'ERROR')
+                updateFileProgress(addedFileState.key, 'ERROR');
               }
-            }),
-          )
+            })
+          );
         }}
       />
 
@@ -750,5 +714,5 @@ function MultiImageExample({ existingImages }: { existingImages?: string[] }) {
         value={JSON.stringify(existingImageUrls)}
       />
     </div>
-  )
+  );
 }
