@@ -1,27 +1,28 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Terms of Use | InvestDirect',
+  title: 'Terms of Service | InvestDirect',
   description:
-    'Terms of Use for InvestDirect - Understanding your rights and obligations when using our platform.',
+    'Terms of Service for InvestDirect - Understanding your rights and obligations when using our platform.',
 }
 
-export default function TermsOfUse() {
+export default function TermsOfService() {
   const lastUpdated = new Date('2025-03-01').toLocaleDateString('en-CA')
   const contactEmail = 'hello@investdirect.community'
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <article className="prose prose-slate max-w-none">
-        <h1 className="text-3xl font-bold mb-6">Terms of Use</h1>
+        <h1 className="text-3xl font-bold mb-6">Terms of Service</h1>
         <p className="text-gray-600 mb-8">Last Updated: {lastUpdated}</p>
 
         <div className="space-y-6">
           <section>
             <p>
               Welcome to InvestDirect. By accessing or using our website and
-              services, you agree to be bound by these Terms of Use ("Terms").
-              Please read these Terms carefully before using our platform.
+              services, you agree to be bound by these Terms of Service
+              ("Terms"). Please read these Terms carefully before using our
+              platform.
             </p>
           </section>
 
