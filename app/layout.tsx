@@ -2,9 +2,9 @@ import { ClerkProvider } from '@clerk/nextjs'
 import '@/app/globals.css'
 
 export const metadata = {
-  title: 'Next.js App Router + NextAuth + Tailwind CSS',
+  title: 'InvestDirect Community',
   description:
-    'A user admin dashboard configured with Next.js, Postgres, NextAuth, Tailwind CSS, TypeScript, and Prettier.',
+    'Connect with real estate investors and lenders in our trusted community platform.',
 }
 
 export default function RootLayout({

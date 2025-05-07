@@ -4,8 +4,9 @@ import { notFound } from 'next/navigation'
 import { getDeal } from '../../actions'
 
 export const metadata = {
-  title: 'Edit Deal',
-  description: 'Edit an existing deal',
+  title: 'Edit Deal | InvestDirect Community',
+  description:
+    'Modify and update your real estate investment opportunity details.',
 }
 
 interface EditDealPageProps {

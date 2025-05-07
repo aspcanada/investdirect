@@ -12,8 +12,9 @@ import {
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Deals',
-  description: 'Browse investment opportunities.',
+  title: 'Deals | InvestDirect Community',
+  description:
+    'Browse and invest in real estate opportunities in our trusted community.',
 }
 
 export default async function DealsPage(props: {
@@ -30,7 +31,11 @@ export default async function DealsPage(props: {
       <CardHeader>
         <CardTitle>Deals</CardTitle>
         <CardDescription>
-          Manage your deals and view their performance.
+          Manage{' '}
+          <Link href="/deals/my" className="text-primary hover:underline">
+            your deals
+          </Link>{' '}
+          and view their performance.
         </CardDescription>
       </CardHeader>
       <CardContent>

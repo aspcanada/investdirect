@@ -14,8 +14,8 @@ import { DealsTable } from '../_components/deal-table'
 import { auth } from '@clerk/nextjs/server'
 
 export const metadata = {
-  title: 'My Deals',
-  description: 'Browse and manage your investment opportunities.',
+  title: 'My Deals | InvestDirect Community',
+  description: 'Manage and track your real estate investment opportunities.',
 }
 
 export default async function DealsPage(props: {

@@ -9,8 +9,9 @@ import { UserCard } from '@/components/UserCard'
 import { getUsers } from './actions'
 
 export const metadata = {
-  title: 'Members',
-  description: 'Browse members.',
+  title: 'Members | InvestDirect Community',
+  description:
+    'Connect with real estate investors and lenders in our trusted network.',
 }
 
 export default async function UsersPage() {

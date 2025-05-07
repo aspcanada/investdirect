@@ -21,7 +21,7 @@ export default async function DealPage({ params }: DealPageProps) {
   }
 
   return (
-    <main className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
+    <main className="container mx-auto px-4 space-y-4">
       {/* back to deals button */}
       <section>
         <Button variant="outline" asChild>

@@ -8,8 +8,9 @@ import {
 import { DealForm } from '../_components/deal-form'
 
 export const metadata = {
-  title: 'Add Deal',
-  description: 'Add a new deal to the database',
+  title: 'Add Deal | InvestDirect Community',
+  description:
+    'Create a new real estate investment opportunity in our community.',
 }
 
 export default function AddDealPage() {

@@ -1,16 +1,14 @@
 import '@/app/globals.css'
 
 import Providers from '../providers'
-import { Analytics } from '@vercel/analytics/react'
-import { SearchInput } from '@/app/search'
-import { UserButton } from '@clerk/nextjs'
-import { MobileNav } from '@/components/nav/mobile'
-import { DesktopNav } from '@/components/nav/desktop'
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { SidebarTrigger } from '@/components/ui/sidebar'
+import { AppSidebar } from '@/components/app-sidebar'
 
 export const metadata = {
-  title: 'Next.js App Router + NextAuth + Tailwind CSS',
+  title: 'Dashboard | InvestDirect Community',
   description:
-    'A user admin dashboard configured with Next.js, Postgres, Clerk, Tailwind CSS, TypeScript, and Prettier.',
+    'Manage your real estate investments and connect with our community.',
 }
 
 export default function DashboardLayout({
@@ -20,20 +18,19 @@ export default function DashboardLayout({
 }) {
   return (
     <Providers>
-      <main className="flex min-h-screen w-full flex-col bg-muted/40">
-        <DesktopNav />
-        <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-          <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-            <MobileNav />
-            <SearchInput />
-            <UserButton />
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+            <div className="flex items-center gap-2 px-4">
+              <SidebarTrigger />
+            </div>
           </header>
-          <main className="grid flex-1 items-start gap-2 p-4 sm:px-6 sm:py-0 md:gap-4 bg-muted/40">
+          <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
             {children}
           </main>
-        </div>
-        <Analytics />
-      </main>
+        </SidebarInset>
+      </SidebarProvider>
     </Providers>
   )
 }
