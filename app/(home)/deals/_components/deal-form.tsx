@@ -624,8 +624,6 @@ function MultiImageExample({ existingImages }: { existingImages?: string[] }) {
         url: urlToDelete
       });
       setExistingImageUrls((prev) => prev.filter((url) => url !== urlToDelete));
-    } catch (EdgeStoreError e) {
-      console.error('Error deleting image:', e);
     } catch (error) {
       console.error('Error deleting image:', error);
     } finally {
