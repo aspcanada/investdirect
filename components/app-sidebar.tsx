@@ -13,7 +13,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
-import { UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // Menu items.
@@ -81,9 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <UserButton />
-      </SidebarFooter>
+      <SidebarFooter></SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )
