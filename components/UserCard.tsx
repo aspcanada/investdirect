@@ -13,13 +13,13 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { MessageCircle, UserPlus } from 'lucide-react'
 import moment from 'moment'
 import { Badge } from './ui/badge'
+import { useComingSoonDialog } from '@/components/providers/coming-soon-dialog'
 
 interface UserCardProps {
   name: string
   id: string
   avatarUrl?: string
   lastSignInAt?: number
-  // onMessageClick: () => void;
 }
 
 const UserCard: FC<UserCardProps> = ({
@@ -29,6 +29,8 @@ const UserCard: FC<UserCardProps> = ({
   lastSignInAt,
   // onMessageClick
 }) => {
+  const { showComingSoon } = useComingSoonDialog()
+
   return (
     <Card>
       <CardHeader className="flex items-center">
@@ -51,11 +53,11 @@ const UserCard: FC<UserCardProps> = ({
         {/* </div> */}
       </CardHeader>
       <CardContent className="flex justify-center gap-2">
-        <Button>
+        <Button onClick={() => showComingSoon('Follow')}>
           <UserPlus />
           Follow
         </Button>
-        <Button variant="outline">
+        <Button variant="outline" onClick={() => showComingSoon('Messages')}>
           <MessageCircle />
           Message
         </Button>
