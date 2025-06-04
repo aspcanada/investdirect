@@ -18,25 +18,20 @@ export default async function UsersPage() {
   const { users, totalCount } = await getUsers()
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Users</CardTitle>
-        <CardDescription>View all users.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {users.map((user) => (
-            <UserCard
-              key={user.id}
-              id={user.id}
-              name={`${user.firstName} ${user.lastName}`}
-              avatarUrl={user.imageUrl}
-              lastSignInAt={user.lastSignInAt}
-              // onMessageClick={() => {}}
-            />
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <>
+      <h3 className="font-semibold">Users</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {users.map((user) => (
+          <UserCard
+            key={user.id}
+            id={user.id}
+            name={`${user.firstName} ${user.lastName}`}
+            avatarUrl={user.imageUrl}
+            lastSignInAt={user.lastSignInAt}
+            // onMessageClick={() => {}}
+          />
+        ))}
+      </div>
+    </>
   )
 }

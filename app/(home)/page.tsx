@@ -13,12 +13,11 @@ export const metadata = {
 
 export default async function HomePage() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Home</CardTitle>
-        <CardDescription>Home page here. Maybe a dashboard?</CardDescription>
-      </CardHeader>
-      <CardContent></CardContent>
-    </Card>
+    <>
+      <h3 className="font-semibold">Home</h3>
+      <p className="text-sm text-muted-foreground">
+        Home page here. Maybe a dashboard?
+      </p>
+    </>
   )
 }
