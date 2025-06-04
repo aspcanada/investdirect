@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
 import { useAuth } from '@clerk/nextjs'
+import { useSocket } from '@/hooks/useSocket'
 
 interface Message {
   id: string
@@ -36,21 +37,29 @@ const ChatDialog: FC<ChatDialogProps> = ({
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
   const { getToken } = useAuth()
+  const socket = useSocket()
+  const chatId = [currentUserId, otherUserId].sort().join('_')
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen || !socket) return
 
+    // Join chat room
+    socket.emit('join-chat', chatId)
+
+    // Listen for new messages
+    socket.on('new-message', (newMessage: Message) => {
+      setMessages((prev) => [...prev, newMessage])
+    })
+
+    // Fetch existing messages
     const fetchMessages = async () => {
       try {
         const token = await getToken()
-        const response = await fetch(
-          `/api/chat?chatId=${[currentUserId, otherUserId].sort().join('_')}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`/api/chat?chatId=${chatId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        )
+        })
         const data = await response.json()
         setMessages(data)
       } catch (error) {
@@ -59,31 +68,26 @@ const ChatDialog: FC<ChatDialogProps> = ({
     }
 
     fetchMessages()
-    // Set up polling for new messages
-    const interval = setInterval(fetchMessages, 5000)
-    return () => clearInterval(interval)
-  }, [isOpen, currentUserId, otherUserId, getToken])
+
+    return () => {
+      socket.emit('leave-chat', chatId)
+      socket.off('new-message')
+    }
+  }, [isOpen, socket, chatId, getToken])
 
   const sendMessage = async () => {
-    if (!message.trim()) return
+    if (!message.trim() || !socket) return
 
-    try {
-      const token = await getToken()
-      await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          text: message,
-          receiverId: otherUserId,
-        }),
-      })
-      setMessage('')
-    } catch (error) {
-      console.error('Error sending message:', error)
-    }
+    socket.emit('send-message', {
+      chatId,
+      message: {
+        text: message,
+        senderId: currentUserId,
+        receiverId: otherUserId,
+      },
+    })
+
+    setMessage('')
   }
 
   return (
