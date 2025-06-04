@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DealForm } from '../../_components/deal-form'
 import { notFound } from 'next/navigation'
 import { getDeal } from '../../actions'
