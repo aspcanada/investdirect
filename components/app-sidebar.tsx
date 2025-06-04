@@ -17,11 +17,11 @@ import Link from 'next/link'
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // Menu items.
   const items = [
-    {
-      title: 'Dashboard',
-      url: '/',
-      icon: Home,
-    },
+    // {
+    //   title: 'Dashboard',
+    //   url: '/',
+    //   icon: Home,
+    // },
     {
       title: 'Deals',
       url: '/deals',
