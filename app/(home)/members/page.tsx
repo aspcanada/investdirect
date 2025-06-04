@@ -14,12 +14,12 @@ export const metadata = {
     'Connect with real estate investors and lenders in our trusted network.',
 }
 
-export default async function UsersPage() {
+export default async function MembersPage() {
   const { users, totalCount } = await getUsers()
 
   return (
     <>
-      <h3 className="font-semibold">Users</h3>
+      <h3 className="font-semibold">Members</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {users.map((user) => (
           <UserCard

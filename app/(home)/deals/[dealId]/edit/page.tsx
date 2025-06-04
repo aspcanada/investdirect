@@ -22,13 +22,12 @@ export default async function EditDealPage({ params }: EditDealPageProps) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Edit deal</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <DealForm mode="edit" deal={deal} />
-      </CardContent>
-    </Card>
+    <>
+      <h3 className="font-semibold">Edit Deal</h3>
+      <p className="text-sm text-muted-foreground">
+        Modify and update your real estate investment opportunity details.
+      </p>
+      <DealForm mode="edit" deal={deal} />
+    </>
   )
 }
