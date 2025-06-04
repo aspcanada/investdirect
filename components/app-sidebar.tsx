@@ -1,4 +1,12 @@
-import { Users2, Home, FolderClosed, ChartNoAxesCombined } from 'lucide-react'
+'use client'
+
+import {
+  Users2,
+  Home,
+  FolderClosed,
+  ChartNoAxesCombined,
+  MessageCircle,
+} from 'lucide-react'
 
 import {
   Sidebar,
@@ -14,7 +22,11 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import Link from 'next/link'
+import { useComingSoonDialog } from '@/components/providers/coming-soon-dialog'
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { showComingSoon } = useComingSoonDialog()
+
   // Menu items.
   const items = [
     // {
@@ -31,6 +43,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: 'Members',
       url: '/members',
       icon: Users2,
+    },
+    {
+      title: 'Messages',
+      icon: MessageCircle,
+      onClick: () => showComingSoon('Messages'),
+      // url: '/messages',
     },
     // {
     //   title: 'Search',
@@ -68,11 +86,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
+                  <SidebarMenuButton
+                    asChild={!!item.url}
+                    onClick={item.onClick}
+                  >
+                    {item.url ? (
+                      <a href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </a>
+                    ) : (
+                      <>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
