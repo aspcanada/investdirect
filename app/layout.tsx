@@ -1,5 +1,6 @@
 import { ClerkProvider } from '@clerk/nextjs'
 import '@/app/globals.css'
+import { ComingSoonDialogProvider } from '@/components/providers/coming-soon-dialog'
 
 export const metadata = {
   title: 'InvestDirect Community',
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="flex min-h-screen w-full flex-col">{children}</body>
+        <body className="flex min-h-screen w-full flex-col">
+          <ComingSoonDialogProvider>{children}</ComingSoonDialogProvider>
+        </body>
       </html>
     </ClerkProvider>
   )

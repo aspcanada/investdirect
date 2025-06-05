@@ -2,13 +2,6 @@ import { PlusCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DealsGrid } from './_components/deal-grid'
 import { getDeals } from './actions'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import Link from 'next/link'
 
 export const metadata = {

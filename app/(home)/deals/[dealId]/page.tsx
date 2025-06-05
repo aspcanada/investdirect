@@ -21,9 +21,9 @@ export default async function DealPage({ params }: DealPageProps) {
   }
 
   return (
-    <main className="container mx-auto px-4 space-y-4">
+    <>
       {/* back to deals button */}
-      <section>
+      <section className="flex items-center justify-between mb-6">
         <Button variant="outline" asChild>
           <Link href="/deals">
             <ArrowLeft />
@@ -55,7 +55,7 @@ export default async function DealPage({ params }: DealPageProps) {
             propertyDetails={deal.propertyDetails}
           />
         </section>
-        <section className="space-y-8">
+        <section className="space-y-4">
           <LocationCard address={deal.propertyDetails.address} />
           <UserCard
             name={`${deal.user.firstName} ${deal.user.lastName}`}
@@ -65,6 +65,6 @@ export default async function DealPage({ params }: DealPageProps) {
           />
         </section>
       </div>
-    </main>
+    </>
   )
 }

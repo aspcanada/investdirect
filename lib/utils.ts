@@ -10,7 +10,9 @@ export function cn(...inputs: ClassValue[]) {
  */
 export const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat('en-CA', {
-    // style: "currency",
+    style: 'currency',
     currency: 'CAD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(amount)
 }
