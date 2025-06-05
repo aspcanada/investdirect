@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState, useRef } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -36,6 +36,11 @@ const ChatDialog: FC<ChatDialogProps> = ({
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
   const { getToken } = useAuth()
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   useEffect(() => {
     if (!isOpen) return
@@ -94,6 +99,11 @@ const ChatDialog: FC<ChatDialogProps> = ({
     }
   }, [isOpen, currentUserId, otherUserId, getToken])
 
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
   const sendMessage = async () => {
     if (!message.trim()) return
 
@@ -136,6 +146,7 @@ const ChatDialog: FC<ChatDialogProps> = ({
                 {msg.text}
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
           <div className="flex gap-2">
             <Input
