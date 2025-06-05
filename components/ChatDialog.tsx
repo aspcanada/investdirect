@@ -29,6 +29,8 @@ interface ChatDialogProps {
   otherUserAvatar: string
 }
 
+const INACTIVITY_TIMEOUT = 5 * 60 * 1000 // 5 minutes in milliseconds
+
 const ChatDialog: FC<ChatDialogProps> = ({
   isOpen,
   onClose,
@@ -43,6 +45,14 @@ const ChatDialog: FC<ChatDialogProps> = ({
   const { getToken } = useAuth()
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const pollIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const inactivityTimerRef = useRef<NodeJS.Timeout | undefined>(undefined)
+
+  const resetInactivityTimer = () => {
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current)
+    }
+    inactivityTimerRef.current = setTimeout(onClose, INACTIVITY_TIMEOUT)
+  }
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -73,9 +83,15 @@ const ChatDialog: FC<ChatDialogProps> = ({
     // Set up polling every 2 seconds
     pollIntervalRef.current = setInterval(fetchMessages, 2000)
 
+    // Start inactivity timer
+    resetInactivityTimer()
+
     return () => {
       if (pollIntervalRef.current) {
         clearInterval(pollIntervalRef.current)
+      }
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current)
       }
     }
   }, [isOpen, currentUserId, otherUserId, getToken])
@@ -104,14 +120,24 @@ const ChatDialog: FC<ChatDialogProps> = ({
       setMessage('')
       // Fetch messages immediately after sending
       fetchMessages()
+      // Reset inactivity timer
+      resetInactivityTimer()
     } catch (error) {
       console.error('Error sending message:', error)
     }
   }
 
+  const handleUserActivity = () => {
+    resetInactivityTimer()
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className="sm:max-w-[425px]"
+        onMouseMove={handleUserActivity}
+        onKeyDown={handleUserActivity}
+      >
         <DialogHeader>
           <DialogTitle>Chat with {otherUserName}</DialogTitle>
         </DialogHeader>
@@ -155,7 +181,10 @@ const ChatDialog: FC<ChatDialogProps> = ({
           <div className="flex gap-2">
             <Input
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                setMessage(e.target.value)
+                handleUserActivity()
+              }}
               placeholder="Type a message..."
               onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
             />
