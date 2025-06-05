@@ -4,6 +4,7 @@ import { loadEnvConfig } from '@next/env'
 import { neon } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-http'
 import { dealsTable } from './schema/deals'
+import { messagesTable } from './schema/messages'
 
 loadEnvConfig(process.cwd())
 
@@ -15,5 +16,6 @@ const sql = neon(process.env.DATABASE_URL)
 export const db = drizzle(sql, {
   schema: {
     dealsTable,
+    messagesTable,
   },
 })

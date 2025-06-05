@@ -1,7 +1,9 @@
 import { auth } from '@clerk/nextjs/server'
-import { adminDb } from '@/lib/firebase-admin'
 import { ChatList } from './_components/chat-list'
 import { getUser } from '../members/actions'
+import { db } from '@/app/db'
+import { messagesTable } from '@/app/db/schema/messages'
+import { desc, eq, or, and } from 'drizzle-orm'
 
 export const metadata = {
   title: 'Messages | InvestDirect Community',
@@ -9,47 +11,43 @@ export const metadata = {
 }
 
 async function getActiveChats(userId: string) {
-  const chatsSnapshot = await adminDb
-    .collection('chats')
-    .where('participants', 'array-contains', userId)
-    .get()
+  // Get all messages where the user is either sender or receiver
+  const messages = await db
+    .select()
+    .from(messagesTable)
+    .where(
+      or(
+        eq(messagesTable.senderId, userId),
+        eq(messagesTable.receiverId, userId),
+      ),
+    )
+    .orderBy(desc(messagesTable.createdAt))
 
-  const chats = await Promise.all(
-    chatsSnapshot.docs.map(async (doc) => {
-      const chatData = doc.data()
-      const otherUserId = chatData.participants.find(
-        (id: string) => id !== userId,
-      )
-
-      // Get the last message
-      const lastMessageSnapshot = await doc.ref
-        .collection('messages')
-        .orderBy('timestamp', 'desc')
-        .limit(1)
-        .get()
-
-      const lastMessage = lastMessageSnapshot.docs[0]?.data()
+  // Group messages by chat_id and get the latest message for each chat
+  const chatMap = new Map()
+  for (const message of messages) {
+    if (!chatMap.has(message.chatId)) {
+      const otherUserId =
+        message.senderId === userId ? message.receiverId : message.senderId
 
       // Get user information
       const userInfo = await getUser(otherUserId)
 
-      return {
-        id: doc.id,
+      chatMap.set(message.chatId, {
+        id: message.chatId,
         otherUserId,
         otherUserName: userInfo.name,
         otherUserAvatar: userInfo.avatarUrl,
-        lastMessage: lastMessage
-          ? {
-              text: lastMessage.text,
-              timestamp: lastMessage.timestamp.toDate(),
-              senderId: lastMessage.senderId,
-            }
-          : null,
-      }
-    }),
-  )
+        lastMessage: {
+          text: message.text,
+          timestamp: message.createdAt,
+          senderId: message.senderId,
+        },
+      })
+    }
+  }
 
-  return chats
+  return Array.from(chatMap.values())
 }
 
 export default async function MessagesPage() {

@@ -16,7 +16,7 @@ interface Message {
   text: string
   senderId: string
   receiverId: string
-  timestamp: Date
+  createdAt: string
 }
 
 interface ChatDialogProps {
@@ -42,65 +42,41 @@ const ChatDialog: FC<ChatDialogProps> = ({
   const [messages, setMessages] = useState<Message[]>([])
   const { getToken } = useAuth()
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const pollIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const fetchMessages = async () => {
+    try {
+      const token = await getToken()
+      const chatId = [currentUserId, otherUserId].sort().join('_')
+      const response = await fetch(`/api/messages?chatId=${chatId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      const data = await response.json()
+      setMessages(data)
+    } catch (error) {
+      console.error('Error fetching messages:', error)
+    }
+  }
+
   useEffect(() => {
     if (!isOpen) return
 
-    const chatId = [currentUserId, otherUserId].sort().join('_')
-    let eventSource: EventSource | null = null
-
-    const setupEventSource = async () => {
-      const token = await getToken()
-      eventSource = new EventSource(
-        `/api/chat/stream?chatId=${chatId}&token=${token}`,
-      )
-
-      eventSource.onmessage = (event) => {
-        const newMessage = JSON.parse(event.data) as Message
-        setMessages((prev) => {
-          // Check if message already exists
-          const exists = prev.some((msg) => msg.id === newMessage.id)
-          if (exists) return prev
-          return [...prev, newMessage]
-        })
-      }
-
-      eventSource.onerror = (error) => {
-        console.error('EventSource error:', error)
-        eventSource?.close()
-      }
-    }
-
-    // Initial fetch of messages
-    const fetchMessages = async () => {
-      try {
-        const token = await getToken()
-        const response = await fetch(`/api/chat?chatId=${chatId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        const data = await response.json()
-        // Sort messages by timestamp to ensure consistent order
-        const sortedMessages = data.sort(
-          (a: Message, b: Message) =>
-            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
-        )
-        setMessages(sortedMessages)
-      } catch (error) {
-        console.error('Error fetching messages:', error)
-      }
-    }
-
+    // Initial fetch
     fetchMessages()
-    setupEventSource()
+
+    // Set up polling every 2 seconds
+    pollIntervalRef.current = setInterval(fetchMessages, 2000)
 
     return () => {
-      eventSource?.close()
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current)
+      }
     }
   }, [isOpen, currentUserId, otherUserId, getToken])
 
@@ -114,7 +90,7 @@ const ChatDialog: FC<ChatDialogProps> = ({
 
     try {
       const token = await getToken()
-      await fetch('/api/chat', {
+      await fetch('/api/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,6 +102,8 @@ const ChatDialog: FC<ChatDialogProps> = ({
         }),
       })
       setMessage('')
+      // Fetch messages immediately after sending
+      fetchMessages()
     } catch (error) {
       console.error('Error sending message:', error)
     }
