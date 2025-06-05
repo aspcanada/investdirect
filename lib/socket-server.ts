@@ -23,16 +23,26 @@ export function initSocketServer() {
   io.on('connection', (socket) => {
     console.log('User connected', socket.id)
 
-    socket.on('message', (msg) => {
-      socket.broadcast.emit('message', msg)
-    })
-
-    socket.on('disconnect', () => {
-      console.log('User disconnected', socket.id)
-    })
-
-    socket.on('join-chat', (chatId: string) => {
+    socket.on('join-chat', async (chatId: string) => {
       socket.join(chatId)
+
+      try {
+        const messagesRef = adminDb
+          .collection('chats')
+          .doc(chatId)
+          .collection('messages')
+        const snapshot = await messagesRef.orderBy('timestamp', 'asc').get()
+
+        const messages = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+
+        socket.emit('chat-history', messages)
+      } catch (error) {
+        console.error('Error fetching chat history:', error)
+        socket.emit('error', 'Failed to load chat history')
+      }
     })
 
     socket.on('leave-chat', (chatId: string) => {
@@ -49,23 +59,33 @@ export function initSocketServer() {
           receiverId: string
         }
       }) => {
-        const { chatId, message } = data
-        const messagesRef = adminDb
-          .collection('chats')
-          .doc(chatId)
-          .collection('messages')
-        const newMessage = await messagesRef.add({
-          ...message,
-          timestamp: new Date(),
-        })
+        try {
+          const { chatId, message } = data
+          const messagesRef = adminDb
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages')
 
-        io.to(chatId).emit('new-message', {
-          id: newMessage.id,
-          ...message,
-          timestamp: new Date(),
-        })
+          const newMessage = await messagesRef.add({
+            ...message,
+            timestamp: new Date(),
+          })
+
+          io.to(chatId).emit('new-message', {
+            id: newMessage.id,
+            ...message,
+            timestamp: new Date(),
+          })
+        } catch (error) {
+          console.error('Error sending message:', error)
+          socket.emit('error', 'Failed to send message')
+        }
       },
     )
+
+    socket.on('disconnect', () => {
+      console.log('User disconnected', socket.id)
+    })
   })
 
   const PORT = process.env.SOCKET_PORT || 3001
