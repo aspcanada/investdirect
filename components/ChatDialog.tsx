@@ -51,7 +51,12 @@ const ChatDialog: FC<ChatDialogProps> = ({
 
       eventSource.onmessage = (event) => {
         const newMessage = JSON.parse(event.data) as Message
-        setMessages((prev) => [...prev, newMessage])
+        setMessages((prev) => {
+          // Check if message already exists
+          const exists = prev.some((msg) => msg.id === newMessage.id)
+          if (exists) return prev
+          return [...prev, newMessage]
+        })
       }
 
       eventSource.onerror = (error) => {
@@ -70,7 +75,12 @@ const ChatDialog: FC<ChatDialogProps> = ({
           },
         })
         const data = await response.json()
-        setMessages(data)
+        // Sort messages by timestamp to ensure consistent order
+        const sortedMessages = data.sort(
+          (a: Message, b: Message) =>
+            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+        )
+        setMessages(sortedMessages)
       } catch (error) {
         console.error('Error fetching messages:', error)
       }
