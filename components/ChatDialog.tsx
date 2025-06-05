@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
 import { useAuth } from '@clerk/nextjs'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface Message {
   id: string
@@ -24,6 +25,8 @@ interface ChatDialogProps {
   currentUserId: string
   otherUserId: string
   otherUserName: string
+  currentUserAvatar: string
+  otherUserAvatar: string
 }
 
 const ChatDialog: FC<ChatDialogProps> = ({
@@ -32,6 +35,8 @@ const ChatDialog: FC<ChatDialogProps> = ({
   currentUserId,
   otherUserId,
   otherUserName,
+  currentUserAvatar,
+  otherUserAvatar,
 }) => {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
@@ -133,19 +138,40 @@ const ChatDialog: FC<ChatDialogProps> = ({
           <DialogTitle>Chat with {otherUserName}</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col h-[400px]">
-          <div className="flex-1 overflow-y-auto mb-4 space-y-2">
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`p-2 rounded-lg max-w-[80%] ${
-                  msg.senderId === currentUserId
-                    ? 'bg-primary text-primary-foreground ml-auto'
-                    : 'bg-muted'
-                }`}
-              >
-                {msg.text}
-              </div>
-            ))}
+          <div className="flex-1 overflow-y-auto mb-4 space-y-4">
+            {messages.map((msg) => {
+              const isCurrentUser = msg.senderId === currentUserId
+              return (
+                <div
+                  key={msg.id}
+                  className={`flex items-end gap-2 ${
+                    isCurrentUser ? 'justify-end' : 'justify-start'
+                  }`}
+                >
+                  {!isCurrentUser && (
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={otherUserAvatar} />
+                      <AvatarFallback>{otherUserName.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  )}
+                  <div
+                    className={`p-2 rounded-lg max-w-[80%] ${
+                      isCurrentUser
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted'
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
+                  {isCurrentUser && (
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={currentUserAvatar} />
+                      <AvatarFallback>You</AvatarFallback>
+                    </Avatar>
+                  )}
+                </div>
+              )
+            })}
             <div ref={messagesEndRef} />
           </div>
           <div className="flex gap-2">

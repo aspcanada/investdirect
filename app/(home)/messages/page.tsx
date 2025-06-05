@@ -58,7 +58,10 @@ export default async function MessagesPage() {
     throw new Error('Unauthorized')
   }
 
-  const chats = await getActiveChats(userId)
+  const [chats, currentUser] = await Promise.all([
+    getActiveChats(userId),
+    getUser(userId),
+  ])
 
   return (
     <div className="space-y-4">
@@ -68,7 +71,11 @@ export default async function MessagesPage() {
           No active chats yet. Start a conversation from the Members page.
         </div>
       ) : (
-        <ChatList chats={chats} currentUserId={userId} />
+        <ChatList
+          chats={chats}
+          currentUserId={userId}
+          currentUserAvatar={currentUser.avatarUrl}
+        />
       )}
     </div>
   )

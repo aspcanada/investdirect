@@ -28,9 +28,14 @@ interface Chat {
 interface ChatListProps {
   chats: Chat[]
   currentUserId: string
+  currentUserAvatar: string
 }
 
-export const ChatList: FC<ChatListProps> = ({ chats, currentUserId }) => {
+export const ChatList: FC<ChatListProps> = ({
+  chats,
+  currentUserId,
+  currentUserAvatar,
+}) => {
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
   const { userId } = useAuth()
 
@@ -87,6 +92,8 @@ export const ChatList: FC<ChatListProps> = ({ chats, currentUserId }) => {
           currentUserId={userId || ''}
           otherUserId={selectedChat.otherUserId}
           otherUserName={selectedChat.otherUserName}
+          currentUserAvatar={currentUserAvatar}
+          otherUserAvatar={selectedChat.otherUserAvatar}
         />
       )}
     </>
