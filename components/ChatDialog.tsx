@@ -40,17 +40,35 @@ const ChatDialog: FC<ChatDialogProps> = ({
   useEffect(() => {
     if (!isOpen) return
 
+    const chatId = [currentUserId, otherUserId].sort().join('_')
+    let eventSource: EventSource | null = null
+
+    const setupEventSource = async () => {
+      const token = await getToken()
+      eventSource = new EventSource(
+        `/api/chat/stream?chatId=${chatId}&token=${token}`,
+      )
+
+      eventSource.onmessage = (event) => {
+        const newMessage = JSON.parse(event.data) as Message
+        setMessages((prev) => [...prev, newMessage])
+      }
+
+      eventSource.onerror = (error) => {
+        console.error('EventSource error:', error)
+        eventSource?.close()
+      }
+    }
+
+    // Initial fetch of messages
     const fetchMessages = async () => {
       try {
         const token = await getToken()
-        const response = await fetch(
-          `/api/chat?chatId=${[currentUserId, otherUserId].sort().join('_')}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`/api/chat?chatId=${chatId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        )
+        })
         const data = await response.json()
         setMessages(data)
       } catch (error) {
@@ -59,9 +77,11 @@ const ChatDialog: FC<ChatDialogProps> = ({
     }
 
     fetchMessages()
-    // Set up polling for new messages
-    const interval = setInterval(fetchMessages, 5000)
-    return () => clearInterval(interval)
+    setupEventSource()
+
+    return () => {
+      eventSource?.close()
+    }
   }, [isOpen, currentUserId, otherUserId, getToken])
 
   const sendMessage = async () => {
