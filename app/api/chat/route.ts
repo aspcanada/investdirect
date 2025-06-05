@@ -48,12 +48,22 @@ export async function POST(request: Request) {
       return new NextResponse('Missing required fields', { status: 400 })
     }
 
-    const chatId = [userId, receiverId].sort().join('_')
-    const messagesRef = adminDb
-      .collection('chats')
-      .doc(chatId)
-      .collection('messages')
+    const participants = [userId, receiverId].sort()
+    const chatId = participants.join('_')
 
+    // Get or create chat document
+    const chatRef = adminDb.collection('chats').doc(chatId)
+    const chatDoc = await chatRef.get()
+
+    if (!chatDoc.exists) {
+      await chatRef.set({
+        participants,
+        createdAt: new Date(),
+      })
+    }
+
+    // Add message
+    const messagesRef = chatRef.collection('messages')
     await messagesRef.add({
       text,
       senderId: userId,

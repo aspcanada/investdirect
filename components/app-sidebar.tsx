@@ -22,11 +22,8 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import Link from 'next/link'
-import { useComingSoonDialog } from '@/components/providers/coming-soon-dialog'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { showComingSoon } = useComingSoonDialog()
-
   // Menu items.
   const items = [
     // {
@@ -47,8 +44,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     {
       title: 'Messages',
       icon: MessageCircle,
-      onClick: () => showComingSoon('Messages'),
-      // url: '/messages',
+      url: '/messages',
     },
     // {
     //   title: 'Search',

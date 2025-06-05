@@ -16,7 +16,8 @@ export async function getUser(userId: string) {
   const user = await client.users.getUser(userId)
   return {
     id: user.id,
-    name: `${user.firstName} ${user.lastName}`,
+    name:
+      `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Unknown User',
     avatarUrl: user.imageUrl,
     lastSignInAt: user.lastSignInAt ?? undefined,
   }
@@ -27,7 +28,9 @@ export async function getUsers(): Promise<{
   totalCount: number
 }> {
   const client = await clerkClient()
-  const { data, totalCount } = await client.users.getUserList({ limit: 10 })
+  const { data, totalCount } = await client.users.getUserList({
+    limit: 10,
+  })
 
   // only return public data
   return {
