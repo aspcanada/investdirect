@@ -14,7 +14,7 @@ import { MessageCircle, UserPlus } from 'lucide-react'
 import moment from 'moment'
 import { Badge } from './ui/badge'
 import { ChatDialog } from './ChatDialog'
-import { useAuth } from '@clerk/nextjs'
+import { useAuth, useUser } from '@clerk/nextjs'
 
 interface UserCardProps {
   name: string
@@ -23,15 +23,10 @@ interface UserCardProps {
   lastSignInAt?: number
 }
 
-const UserCard: FC<UserCardProps> = ({
-  name,
-  id,
-  avatarUrl,
-  lastSignInAt,
-  // onMessageClick
-}) => {
+const UserCard: FC<UserCardProps> = ({ name, id, avatarUrl, lastSignInAt }) => {
   const [isChatOpen, setIsChatOpen] = useState(false)
   const { userId } = useAuth()
+  const { user } = useUser()
 
   return (
     <>
@@ -44,16 +39,13 @@ const UserCard: FC<UserCardProps> = ({
               <AvatarFallback>{name.charAt(0)}</AvatarFallback>
             )}
           </Avatar>
-          {/* <div> */}
           <CardTitle className="text-lg">{name}</CardTitle>
           <CardDescription className="flex flex-col gap-2">
-            {/* TODO: Add job title */}
             <div>
               <Badge>Lender</Badge>
             </div>
             Active: {lastSignInAt ? moment(lastSignInAt).fromNow() : 'Never'}
           </CardDescription>
-          {/* </div> */}
         </CardHeader>
         <CardContent className="flex justify-center gap-2">
           <Button>
@@ -75,6 +67,8 @@ const UserCard: FC<UserCardProps> = ({
         currentUserId={userId || ''}
         otherUserId={id}
         otherUserName={name}
+        currentUserAvatar={user?.imageUrl || ''}
+        otherUserAvatar={avatarUrl || ''}
       />
     </>
   )
