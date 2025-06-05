@@ -23,7 +23,7 @@ export default async function DealPage({ params }: DealPageProps) {
   return (
     <>
       {/* back to deals button */}
-      <section>
+      <section className="flex items-center justify-between mb-6">
         <Button variant="outline" asChild>
           <Link href="/deals">
             <ArrowLeft />
