@@ -21,7 +21,6 @@ interface UserCardProps {
   id: string
   avatarUrl?: string
   lastSignInAt?: number
-  // onMessageClick: () => void;
 }
 
 const UserCard: FC<UserCardProps> = ({
