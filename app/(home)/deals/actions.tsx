@@ -192,8 +192,8 @@ export async function upsertDeal(
     }
   }
 
-  revalidatePath('/deals')
-  redirect('/deals')
+  revalidatePath('/deals/my')
+  redirect('/deals/my')
 }
 
 export async function getDeal(dealId: string): Promise<Deal | null> {

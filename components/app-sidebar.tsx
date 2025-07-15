@@ -22,11 +22,8 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import Link from 'next/link'
-import { useComingSoonDialog } from '@/components/providers/coming-soon-dialog'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { showComingSoon } = useComingSoonDialog()
-
   // Menu items.
   const items = [
     // {
@@ -47,8 +44,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     {
       title: 'Messages',
       icon: MessageCircle,
-      onClick: () => showComingSoon('Messages'),
-      // url: '/messages',
+      url: '/messages',
     },
     // {
     //   title: 'Search',
@@ -86,21 +82,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild={!!item.url}
-                    onClick={item.onClick}
-                  >
-                    {item.url ? (
-                      <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </a>
-                    ) : (
-                      <>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </>
-                    )}
+                  <SidebarMenuButton asChild={!!item.url}>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
